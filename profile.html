@@ -564,18 +564,27 @@ document.addEventListener("DOMContentLoaded", () => {
         webUrlValueElement.addEventListener('click', copyUrlToClipboard);  
     }  
 }); 
+auth.onAuthStateChanged(user => {
 
-/* 🔁 REDIRECT MODE */
-const params = new URLSearchParams(window.location.search);
-const uidFromUrl = params.get("uid");
+    // 🔐 AGAR USER LOGIN HAI → KUCH REDIRECT NAHI
+    if (user) {
+        console.log("User logged in, no redirect");
+        return;
+    }
 
-if (uidFromUrl) {
-    db.collection("users").doc(uidFromUrl).get().then(doc => {
-        if (doc.exists && doc.data().activeThemeUrl) {
-            window.location.href = doc.data().activeThemeUrl;
-        }
-    });
-}
+    // 👤 SIRF GUEST MODE ME REDIRECT
+    const params = new URLSearchParams(window.location.search);
+    const uidFromUrl = params.get("uid");
+
+    if (uidFromUrl) {
+        db.collection("users").doc(uidFromUrl).get()
+        .then(doc => {
+            if (doc.exists && doc.data().activeThemeUrl) {
+                window.location.href = doc.data().activeThemeUrl;
+            }
+        });
+    }
+});
 </script>  
 </body>  
-    </html>
+                                       </html>

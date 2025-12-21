@@ -8,10 +8,9 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>  
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>  
 <style>  
-/* --- 1. General Styles --- */  
+/* Sabhi styles pehle jaise hi hain */
 body { margin: 0; font-family: Arial, sans-serif; background: #1E2230; color: #fff; overflow-x: hidden; }  
 button { cursor: pointer; }  
-/* --- 2. Profile Page Styles --- */  
 .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #1E2230; }  
 .top-nav i { font-size: 20px; color: #fff; cursor: pointer; }  
 .top-nav-avatar { width: 30px; height: 30px; border-radius: 50%; background: #ff9f43; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: #1E2230; }  
@@ -37,21 +36,14 @@ button { cursor: pointer; }
 .menu-item-arrow { color: #aaa; }  
 .logout-btn-container { margin: 20px; }  
 .logout-btn { background: #2c2f4a; color: #fff; border: none; width: 100%; padding: 15px; border-radius: 10px; font-size: 16px; cursor: pointer; text-align: left; display: flex; align-items: center; }  
-
 #themes-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1f2437; z-index: 1000; display: none; overflow-y: auto; }  
-.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 15px; background: #1f2437; position: sticky; top: 0; z-index: 1010; }  
-.modal-header h2 { margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 0.5px; }  
-.modal-close-btn { background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; padding: 0 5px; opacity: 0.7; }  
-.theme-list { padding: 0 10px; }  
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #1f2437; position: sticky; top: 0; z-index: 1010; }  
+.modal-header h2 { margin: 0; font-size: 18px; font-weight: bold; }  
+.modal-close-btn { background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; }  
+.theme-list { padding: 10px; }  
 .theme-item { display: flex; align-items: center; justify-content: space-between; background: #2a304a; padding: 15px; margin-bottom: 10px; border-radius: 8px; }  
-.theme-info { display: flex; align-items: center; }  
-.theme-icon { font-size: 20px; color: #2ecc71; margin-right: 15px; }  
-.text-content { display: flex; flex-direction: column; text-align: left; }  
-.theme-name { font-size: 16px; font-weight: bold; margin-bottom: 2px; }  
-.status { font-size: 12px; color: #2ecc71; display: flex; align-items: center; }  
-.status::before { content: '•'; font-size: 18px; line-height: 0; margin-right: 4px; }  
-.use-btn { padding: 10px 20px; border-radius: 8px; border: none; background: #8e44ad; color: #fff; font-size: 14px; font-weight: bold; text-transform: uppercase; min-width: 80px; transition: background 0.3s; cursor: pointer; }  
-.use-btn.active-theme { background: #2ecc71 !important; color: #1E2230; cursor: default; opacity: 1; }  
+.use-btn { padding: 10px 20px; border-radius: 8px; border: none; background: #8e44ad; color: #fff; font-weight: bold; cursor: pointer; }  
+.use-btn.active-theme { background: #2ecc71 !important; color: #1E2230; cursor: default; }  
 </style>  
 </head>  
 <body>  
@@ -63,8 +55,7 @@ button { cursor: pointer; }
             <i class="fas fa-search" style="margin-right: 15px;"></i>  
             <i class="fas fa-sun" style="margin-right: 15px;"></i>  
             <i class="fas fa-th-large" style="margin-right: 15px;"></i>  
-            <i class="fas fa-comment-dots" style="margin-right: 15px;"></i>  
-            <div class="top-nav-avatar" id="top-nav-avatar">A</div>  
+            <div class="top-nav-avatar" id="top-nav-avatar">?</div>  
         </div>  
     </div>  
 
@@ -72,38 +63,15 @@ button { cursor: pointer; }
         <div class="profile-info">  
             <div class="avatar" id="avatar">👤</div>  
             <div class="username-details">  
-                <strong id="username">Checking Auth...</strong>  
+                <strong id="username">Loading...</strong>  
                 <span id="email" style="font-size: 14px; color: rgba(255, 255, 255, 0.8);">...</span>  
             </div>  
             <span class="member-tag">MEMBER</span>  
         </div>  
-
         <div class="web-info">  
-            <div class="web-url-label">YOUR WEB URL (CLICK TO COPY)</div>  
+            <div class="web-url-label">YOUR WEB URL</div>  
             <div class="web-url-value" id="web-url-value">...</div>  
         </div>  
-
-        <div class="stats-container">  
-            <div class="stat-box">  
-                <div class="label"><i class="fas fa-star"></i> RANK</div>  
-                <div class="value">#285</div>  
-            </div>  
-            <div class="stat-box">  
-                <div class="label"><i class="fas fa-trophy"></i> RESULTS</div>  
-                <div class="value">0</div>  
-            </div>  
-        </div>  
-    </div>  
-
-    <div class="alert-card">  
-        <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>  
-        link your telegram account before using the web  
-        <button class="link-btn">LINK</button>  
-    </div>  
-
-    <div class="menu-item">  
-        <div class="menu-item-text"><i class="fas fa-cog"></i> ACCOUNT SETTINGS</div>  
-        <div class="menu-item-arrow"><i class="fas fa-chevron-right"></i></div>  
     </div>  
 
     <div class="menu-item" onclick="showThemesModal()">  
@@ -111,15 +79,9 @@ button { cursor: pointer; }
         <div class="menu-item-arrow"><i class="fas fa-chevron-right"></i></div>  
     </div>  
 
-    <div class="menu-item">  
-        <div class="menu-item-text"><i class="fas fa-user-circle"></i> PROFILE SETTINGS</div>  
-        <div class="menu-item-arrow"><i class="fas fa-chevron-right"></i></div>  
-    </div>  
-
     <div class="logout-btn-container">  
         <button class="logout-btn" onclick="logout()">  
-            <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i>  
-            LOGOUT  
+            <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> LOGOUT  
         </button>  
     </div>  
 </div>  
@@ -129,11 +91,11 @@ button { cursor: pointer; }
         <h2>THEMES & DEMOS</h2>  
         <button class="modal-close-btn" onclick="hideThemesModal()">&times;</button>  
     </div>  
-    <div class="theme-list">  
-        <div class="theme-item"><div class="theme-info"><span class="theme-icon">&#x27A4;</span><div class="text-content"><div class="theme-name">New Event 1</div><div class="status">ONLINE</div></div></div><button class="use-btn" data-theme="event1" data-url="https://temporasms.com/buy-number" onclick="useTheme(this)">USE</button></div>  
-        <div class="theme-item"><div class="theme-info"><span class="theme-icon">&#x27A4;</span><div class="text-content"><div class="theme-name">New Event 2</div><div class="status">ONLINE</div></div></div><button class="use-btn" data-theme="event2" data-url="https://smsnum.org/numbers/" onclick="useTheme(this)">USE</button></div>  
-        <div class="theme-item"><div class="theme-info"><span class="theme-icon">&#x27A4;</span><div class="text-content"><div class="theme-name">New Event 3</div><div class="status">ONLINE</div></div></div><button class="use-btn" data-theme="event3" data-url="theme.html" onclick="useTheme(this)">USE</button></div>  
-        <div class="theme-item"><div class="theme-info"><span class="theme-icon">&#x27A4;</span><div class="text-content"><div class="theme-name">New Event 4</div><div class="status">ONLINE</div></div></div><button class="use-btn" data-theme="event4" data-url="https://example.com/theme4?user=[UID]" onclick="useTheme(this)">USE</button></div>  
+    <div class="theme-list" id="themeList">  
+        <div class="theme-item">  
+            <span>Theme 1</span>  
+            <button class="use-btn" data-theme="event1" data-url="https://temporasms.com/buy-number" onclick="useTheme(this)">USE</button>  
+        </div>  
     </div>  
 </div>
 
@@ -147,18 +109,22 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();  
 const db = firebase.firestore();  
 
-// ✅ FORCE PERSISTENCE IMMEDIATELY
+// Persistence Set Karein
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
 const BASE_DOMAIN = "https://flowownerffwebontg.github.io/WEB2/profile.html?uid=";
-let currentUserUID = ""; 
 
-function updateUrlDisplay() {  
-    const el = document.getElementById('web-url-value');  
-    if (el && currentUserUID) el.innerText = BASE_DOMAIN + currentUserUID;  
+// 🛡️ LOCK LOGIC: Agar local memory mein login hai toh index par nahi jayega
+if (!localStorage.getItem("isLoggedIn") && !window.location.search.includes("uid")) {
+    window.location.href = "index.html";
+}
+
+function updateUrlDisplay(uid) {  
+    document.getElementById('web-url-value').innerText = BASE_DOMAIN + uid;  
 }  
 
 function logout(){  
+    localStorage.removeItem("isLoggedIn"); // Memory clear karein
     auth.signOut().then(()=>{ window.location.href = "index.html"; });  
 }  
   
@@ -176,11 +142,10 @@ function useTheme(btn){
     db.collection("users").doc(user.uid).set({ activeThemeId: themeId, activeThemeUrl: customUrl }, { merge: true });
 }  
   
-// ✅ ANTI-LOGOUT GUARD: Jab tak user pakka logout na ho, tab tak index par nahi bhejein
 auth.onAuthStateChanged(user=>{  
     if(user){  
-        currentUserUID = user.uid; 
-        updateUrlDisplay(); 
+        localStorage.setItem("isLoggedIn", "true"); // Login status save karein
+        updateUrlDisplay(user.uid); 
         let name = user.displayName || user.email.split('@')[0];  
         document.getElementById("username").innerText = name;  
         document.getElementById("email").innerText = user.email;  
@@ -198,26 +163,18 @@ auth.onAuthStateChanged(user=>{
             }  
         });  
     } else {  
-        // ⚠️ Agar aap login page se yahan aaye hain aur session load hone mein time le raha hai,
-        // toh ye 2 second wait karega. Agar user bilkul nahi hai, tabhi index.html par bhejega.
-        setTimeout(() => {
-            if(!auth.currentUser) { window.location.href = "index.html"; }
-        }, 2000);
+        // Agar manually logout kiya hai tabhi index par bhejega
+        if (!localStorage.getItem("isLoggedIn")) {
+            window.location.href = "index.html";
+        }
     }  
 });  
 
+// Copy logic
 document.getElementById('web-url-value').addEventListener('click', () => {
     navigator.clipboard.writeText(document.getElementById('web-url-value').innerText);
     alert("Copied!");
 });
-
-// Redirect check
-const uidUrl = new URLSearchParams(window.location.search).get("uid");
-if (uidUrl) {
-    db.collection("users").doc(uidUrl).get().then(doc => {
-        if (doc.exists && doc.data().activeThemeUrl) window.location.href = doc.data().activeThemeUrl;
-    });
-}
 </script>  
 </body>  
 </html>

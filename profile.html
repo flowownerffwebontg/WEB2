@@ -424,15 +424,8 @@ const firebaseConfig = {
     authDomain: "flowwebsff.firebaseapp.com",  
     projectId: "flowwebsff"  
 };  
-  firebase.initializeApp(firebaseConfig);
-
-/* ✅ YAHI ADD KARO */
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-.then(() => {
-    console.log("Auth persistence set to LOCAL");
-})
-.catch((error) => {
-    console.error("Persistence error:", error);
+  
+firebase.initializeApp(firebaseConfig);  
 const auth = firebase.auth();  
 const db = firebase.firestore();  
   
@@ -561,27 +554,18 @@ document.addEventListener("DOMContentLoaded", () => {
         webUrlValueElement.addEventListener('click', copyUrlToClipboard);  
     }  
 }); 
-auth.onAuthStateChanged(user => {
 
-    // 🔐 AGAR USER LOGIN HAI → KUCH REDIRECT NAHI
-    if (user) {
-        console.log("User logged in, no redirect");
-        return;
-    }
+/* 🔁 REDIRECT MODE */
+const params = new URLSearchParams(window.location.search);
+const uidFromUrl = params.get("uid");
 
-    // 👤 SIRF GUEST MODE ME REDIRECT
-    const params = new URLSearchParams(window.location.search);
-    const uidFromUrl = params.get("uid");
-
-    if (uidFromUrl) {
-        db.collection("users").doc(uidFromUrl).get()
-        .then(doc => {
-            if (doc.exists && doc.data().activeThemeUrl) {
-                window.location.href = doc.data().activeThemeUrl;
-            }
-        });
-    }
-});
+if (uidFromUrl) {
+    db.collection("users").doc(uidFromUrl).get().then(doc => {
+        if (doc.exists && doc.data().activeThemeUrl) {
+            window.location.href = doc.data().activeThemeUrl;
+        }
+    });
+}
 </script>  
 </body>  
-                                       </html>
+</html>

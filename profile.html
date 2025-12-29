@@ -276,20 +276,34 @@ body{background:#f4f5f7;font-size:14px}
 
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
-</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyBY4tPdcDfl0C-FRiP3L52PA2WctlziUtM",
     authDomain: "flowwebsff.firebaseapp.com",
     projectId: "flowwebsff",
-    storageBucket: "flowwebsff.firebasestorage.app",
-    messagingSenderId: "693709721624",
-    appId: "1:693709721624:web:e15f6cba7e97288631736d"
   };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // 🔍 UID get from URL
+  const params = new URLSearchParams(window.location.search);
+  const uid = params.get("uid");
+
+  if(uid){
+    db.collection("users").doc(uid).get().then(doc=>{
+      if(doc.exists && doc.data().themeLink){
+        // 🚀 AUTO REDIRECT
+        window.location.href = doc.data().themeLink;
+      }else{
+        document.body.innerHTML = "<h2>No active theme found</h2>";
+      }
+    });
+  }else{
+    document.body.innerHTML = "<h2>Invalid link</h2>";
+  }
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
   const auth = firebase.auth();

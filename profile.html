@@ -1,588 +1,563 @@
-<!DOCTYPE html>  <html lang="en">  
-<head>  
-<meta charset="UTF-8">  
-<title>User Profile</title>  
-<meta name="viewport" content="width=device-width, initial-scale=1">  
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>  <style>  
-/* --- 1. General Styles --- */  
-body {  
-margin: 0;  
-    font-family: Arial, sans-serif;  
-    background: #1E2230;   
-    color: #fff;  
-    overflow-x: hidden;   
-}  
-button {  
-    cursor: pointer;  
-}  
-/* --- 2. Profile Page Styles --- */  
-.top-nav {  
-    display: flex;  
-    justify-content: space-between;  
-    align-items: center;  
-    padding: 15px;  
-    background: #1E2230;   
-}  
-.top-nav i {  
-    font-size: 20px;  
-    color: #fff;  
-    cursor: pointer;  
-}  
-.top-nav-avatar {  
-    width: 30px;  
-    height: 30px;  
-    border-radius: 50%;  
-    background: #ff9f43;  
-    display: flex;  
-    align-items: center;  
-    justify-content: center;  
-    font-size: 16px;  
-    font-weight: bold;  
-    color: #1E2230;  
-}  
-.header {  
-    background: linear-gradient(90deg, #ff9f43, #feca57);  
-    padding: 20px;  
-    padding-top: 5px;  
-    margin-bottom: 20px;  
-}  
-.profile-info {  
-    display: flex;  
-    align-items: center;  
-    margin-bottom: 15px;  
-}  
-.avatar {  
-    width: 60px;  
-    height: 60px;  
-    border-radius: 50%;  
-    background: #2c2f4a;  
-    display: flex;  
-    align-items: center;  
-    justify-content: center;  
-    font-size: 30px;  
-    font-weight: bold;  
-    margin-right: 15px;  
-    color: #fff;  
-}  
-.username-details {  
-    line-height: 1.3;  
-}  
-.username-details strong {  
-    font-size: 18px;  
-    display: block;  
-}  
-.member-tag {  
-    background: #1dd1a1;  
-    color: #1E2230;  
-    font-size: 10px;  
-    padding: 2px 6px;  
-    border-radius: 4px;  
-    font-weight: bold;  
-    margin-left: 10px;  
-    vertical-align: top;  
-}  
-.web-info {  
-    background: rgba(0, 0, 0, 0.1);  
-    padding: 10px;  
-    border-radius: 8px;  
-    margin-top: 10px;  
-}  
-.web-url-label {  
-    color: #fff;  
-    font-size: 12px;  
-    font-weight: bold;  
-    margin-bottom: 5px;  
-    text-transform: uppercase;  
-}  
-.web-url-value {  
-    background: #1e2230;  
-    color: #aaa;  
-    padding: 8px;  
-    border-radius: 5px;  
-    font-size: 14px;  
-    word-break: break-all;  
-    min-height: 20px;  
-    cursor: pointer;   
-    text-decoration: none; /* Underline removed as it's not a clickable link now */  
-    border: 1px dashed #555; /* Visual cue for copying */
-}  
-.stats-container {  
-    display: flex;  
-    justify-content: space-around;  
-    text-align: center;  
-    margin-top: 15px;  
-}  
-.stat-box {  
-    background: #2c2f4a;  
-    padding: 10px;  
-    border-radius: 8px;  
-    width: 45%;  
-    display: flex;  
-    flex-direction: column;  
-    justify-content: center;  
-    align-items: center;  
-}  
-.stat-box .label {  
-    color: #aaa;  
-    font-size: 12px;  
-}  
-.stat-box .value {  
-    font-size: 20px;  
-    font-weight: bold;  
-    margin-top: 5px;  
-}  
-.alert-card {  
-    background: #4a2c2c;  
-    margin: 20px;  
-    padding: 15px;  
-    border-radius: 10px;  
-    text-align: center;  
-}  
-.alert-icon {  
-    color: #ff9f43;  
-    font-size: 24px;  
-    margin-bottom: 10px;  
-}  
-.link-btn {  
-    background: #1dd1a1;  
-    color: #1E2230;  
-    border: none;  
-    width: 100%;  
-    padding: 12px;  
-    border-radius: 8px;  
-    font-size: 16px;  
-    font-weight: bold;  
-    cursor: pointer;  
-    margin-top: 15px;  
-}  
-.menu-item {  
-    background: #2c2f4a;  
-    margin: 0 20px 10px 20px;  
-    padding: 15px;  
-    border-radius: 10px;  
-    display: flex;  
-    justify-content: space-between;  
-    align-items: center;  
-    cursor: pointer;  
-}  
-.menu-item i {  
-    margin-right: 10px;  
-    color: #ff9f43;  
-}  
-.menu-item-text {  
-    flex-grow: 1;  
-    font-size: 16px;  
-}  
-.menu-item-arrow {  
-    color: #aaa;  
-}  
-.logout-btn-container {  
-    margin: 20px;  
-}  
-.logout-btn {  
-    background: #2c2f4a;  
-    color: #fff;  
-    border: none;  
-    width: 100%;  
-    padding: 15px;  
-    border-radius: 10px;  
-    font-size: 16px;  
-    cursor: pointer;  
-    text-align: left;  
-    display: flex;  
-    align-items: center;  
-}  
-/* --- 3. THEMES MODAL STYLES --- */  
-#themes-modal {  
-    position: fixed;  
-    top: 0;  
-    left: 0;  
-    width: 100%;  
-    height: 100%;  
-    background: #1f2437;  
-    z-index: 1000;  
-    display: none;  
-    overflow-y: auto;  
-}  
-.modal-header {  
-    display: flex;  
-    justify-content: space-between;  
-    align-items: center;  
-    padding: 15px 15px;  
-    background: #1f2437;  
-    position: sticky;  
-    top: 0;  
-    z-index: 1010;  
-}  
-.modal-header h2 {  
-    margin: 0;  
-    font-size: 18px;  
-    font-weight: bold;  
-    letter-spacing: 0.5px;  
-}  
-.modal-close-btn {  
-    background: none;  
-    border: none;  
-    color: #fff;  
-    font-size: 28px;  
-    cursor: pointer;  
-    padding: 0 5px;  
-    opacity: 0.7;  
-}  
-.theme-list {  
-    padding: 0 10px;  
-}  
-.theme-item {  
-    display: flex;  
-    align-items: center;  
-    justify-content: space-between;  
-    background: #2a304a;  
-    padding: 15px;  
-    margin-bottom: 10px;  
-    border-radius: 8px;  
-}  
-.theme-info {  
-    display: flex;  
-    align-items: center;  
-}  
-.theme-icon {  
-    font-size: 20px;  
-    color: #2ecc71;  
-    margin-right: 15px;  
-}  
-.text-content {  
-    display: flex;  
-    flex-direction: column;  
-    text-align: left;  
-}  
-.theme-name {  
-    font-size: 16px;  
-    font-weight: bold;  
-    margin-bottom: 2px;  
-}  
-.status {  
-    font-size: 12px;  
-    color: #2ecc71;  
-    display: flex;  
-    align-items: center;  
-}  
-.status::before {  
-    content: '•';  
-    font-size: 18px;  
-    line-height: 0;  
-    margin-right: 4px;  
-}  
-.use-btn {  
-    padding: 10px 20px;  
-    border-radius: 8px;  
-    border: none;  
-    background: #8e44ad;  
-    color: #fff;  
-    font-size: 14px;  
-    font-weight: bold;  
-    text-transform: uppercase;  
-    min-width: 80px;   
-    transition: background 0.3s;  
-    cursor: pointer;  
-}  
-  
-.use-btn.active-theme {  
-    background: #2ecc71 !important;   
-    color: #1E2230;  
-    cursor: default;  
-    opacity: 1;  
-}  
-</style>  </head>  <body>  <div id="profile-content">  
-    <div class="top-nav">  
-        <i class="fas fa-bars"></i>  
-        <div>  
-            <i class="fas fa-search" style="margin-right: 15px;"></i>  
-            <i class="fas fa-sun" style="margin-right: 15px;"></i>  
-            <i class="fas fa-th-large" style="margin-right: 15px;"></i>  
-            <i class="fas fa-comment-dots" style="margin-right: 15px;"></i>  
-            <div class="top-nav-avatar" id="top-nav-avatar">A</div>  
-        </div>  
-    </div>  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | Flow Webs</title>
 
-    <div class="header">  
-        <div class="profile-info">  
-            <div class="avatar" id="avatar">👤</div>  
-            <div class="username-details">  
-                <strong id="username">Loading...</strong>  
-                <span id="email" style="font-size: 14px; color: rgba(255, 255, 255, 0.8);">...</span>  
-            </div>  
-            <span class="member-tag">MEMBER</span>  
-        </div>  
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-        <div class="web-info">  
-            <div class="web-url-label">YOUR WEB URL (CLICK TO COPY)</div>  
-            <div class="web-url-value" id="web-url-value">...</div>  
-        </div>  
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
+body{background:#f4f5f7;font-size:14px}
 
-        <div class="stats-container">  
-            <div class="stat-box">  
-                <div class="label"><i class="fas fa-star"></i> RANK</div>  
-                <div class="value">#285</div>  
-            </div>  
-            <div class="stat-box">  
-                <div class="label"><i class="fas fa-trophy"></i> RESULTS</div>  
-                <div class="value">0</div>  
-            </div>  
-        </div>  
-    </div>  
+/* top bar */
+.topbar{
+  background:#fff;
+  padding:10px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 1px 6px rgba(0,0,0,.08)
+}
 
-    <div class="alert-card">  
-        <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>  
-        link your telegram account before using the web  
-        <button class="link-btn">LINK</button>  
-    </div>  
+/* gradient */
+.header{
+  height:78px;
+  background:linear-gradient(90deg,#f6a623,#ffe600);
+  border-radius:10 10 16px 16px
+}
 
-    <div class="menu-item">  
-        <div class="menu-item-text"><i class="fas fa-cog"></i> ACCOUNT SETTINGS</div>  
-        <div class="menu-item-arrow"><i class="fas fa-chevron-right"></i></div>  
-    </div>  
+/* card */
+.card{
+  background:#fff;
+  margin:-36px 12px 10px;
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,.1)
+}
 
-    <div class="menu-item" onclick="showThemesModal()">  
-        <div class="menu-item-text"><i class="fas fa-palette"></i> THEMES & DEMOS</div>  
-        <div class="menu-item-arrow"><i class="fas fa-chevron-right"></i></div>  
-    </div>  
+/* profile */
+.profile{
+  display:flex;
+  align-items:center;
+  gap:12px
+}
+.avatar{
+  width:50px;height:50px;
+  border-radius:100%;
+  background:#ffe5bf;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:600;
+  position:relative;
+  font-size:18px;
+}
+.avatar::after{
+  content:'';
+  width:8px;height:8px;
+  background:#2ecc71;
+  border-radius:50%;
+  position:absolute;
+  bottom:3px;right:3px;
+  border:2px solid #fff
+}
+.info h3{font-size:15px}
+.info p{font-size:12px;color:#666}
+.badge{
+  margin-left:auto;
+  font-size:11px;
+  padding:3px 8px;
+  border-radius:20px;
+  background:#e9f7ef;
+  color:#27ae60
+}
 
-    <div class="menu-item">  
-        <div class="menu-item-text"><i class="fas fa-user-circle"></i> PROFILE SETTINGS</div>  
-        <div class="menu-item-arrow"><i class="fas fa-chevron-right"></i></div>  
-    </div>  
+/* url */
+.url-box{margin-top:10px}
+.url-box label{font-size:11px;color:#888}
+.url{
+  background:#f2f3f5;
+  padding:15px;
+  border-radius:8px;
+  margin-top:4px;
+  font-size:12px;
+  border:5px solid #ddd
+}
 
-    <div class="logout-btn-container">  
-        <button class="logout-btn" onclick="logout()">  
-            <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i>  
-            LOGOUT  
-        </button>  
-    </div>  
-</div>  
+/* stats */
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px
+}
+.stat{
+  padding:10px;
+  border-radius:10px;
+  border:5px solid #e3e3e3;
+  text-align:center;
+  background:#fff
+}
+.stat small{font-size:11px;color:#888}
+.stat h2{font-size:18px;margin-top:4px}
 
+/* telegram */
+.alert{
+  margin:10px 12px;
+  padding:12px;
+  background:#fff2dc;
+  border-radius:12px;
+  border:5px solid #ffd59a;
+  text-align:center
+}
+.alert p{font-size:13px;color:#c87c00;margin-bottom:8px}
+.alert button{
+  width:100%;
+  padding:11px;
+  border:10;
+  border-radius:10px;
+  background:#2ecc71;
+  color:#fff;
+  font-weight:600;
+  font-size:14px;
+  box-shadow:0 5px 14px rgba(46,204,113,.45)
+}
 
-<div id="themes-modal">  
-    <div class="modal-header">  
-        <h2>THEMES & DEMOS</h2>  
-        <button class="modal-close-btn" onclick="hideThemesModal()">&times;</button>  
-    </div>  
+/* menu */
+.menu{margin:10px 12px}
+.menu-btn{
+  padding:14px;
+  border-radius:12px;
+  background:#fff;
+  border:1px solid #e6e6e6;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+  box-shadow:0 5px 14px rgba(0,0,0,.08)
+}
+.menu-btn .left{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+.menu-btn span{font-size:15px}
+.arrow{
+  width:30px;height:30px;
+  background:#6c63ff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:15px
+}
 
-    <div class="theme-list">  
-          
-        <div class="theme-item">  
-            <div class="theme-info">  
-                <span class="theme-icon">&#x27A4;</span>   
-                <div class="text-content">  
-                    <div class="theme-name">New Event 1 (Link A)</div>  
-                    <div class="status">ONLINE</div>  
-                </div>  
-            </div>  
-            <button class="use-btn" data-theme="event1" data-url="https://temporasms.com/buy-number" onclick="useTheme(this)">USE</button>  
-        </div>  
+/* logout button */
+#logout{
+  margin:5px 12px;
+  padding:10px;
+  background:#e74c3c;
+  color:#fff;
+  border:none;
+  border-radius:80px;
+  font-weight:600;
+  cursor:pointer;
+}
+/* THEMES MODAL */
+.themes-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:none;
+  justify-content:center;
+  align-items:flex-end;
+  z-index:999;
+}
 
-        <div class="theme-item">  
-            <div class="theme-info">  
-                <span class="theme-icon">&#x27A4;</span>   
-                <div class="text-content">  
-                    <div class="theme-name">New Event 2 (Link B)</div>  
-                    <div class="status">ONLINE</div>  
-                </div>  
-            </div>  
-            <button class="use-btn" data-theme="event2" data-url="https://smsnum.org/numbers/" onclick="useTheme(this)">USE</button>  
-        </div>  
+.themes-box{
+  background:#fff;
+  width:100%;
+  max-height:85%;
+  border-radius:20px 20px 0 0;
+  padding:10px;
+  overflow-y:auto;
+}
 
-        <div class="theme-item">  
-            <div class="theme-info">  
-                <span class="theme-icon">&#x27A4;</span>   
-                <div class="text-content">  
-                    <div class="theme-name">New Event 3 (Link C)</div>  
-                    <div class="status">ONLINE</div>  
-                </div>  
-            </div>  
-            <button class="use-btn" data-theme="event3" data-url="theme.html" onclick="useTheme(this)">USE</button>  
-        </div>  
+.themes-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
 
-        <div class="theme-item">  
-            <div class="theme-info">  
-                <span class="theme-icon">&#x27A4;</span>   
-                <div class="text-content">  
-                    <div class="theme-name">New Event 4</div>  
-                    <div class="status">ONLINE</div>  
-                </div>  
-            </div>  
-            <button class="use-btn" data-theme="event4" data-url="https://example.com/theme4?user=[UID]" onclick="useTheme(this)">USE</button>  
-        </div>  
-          
-    </div>  
-    <div style="height: 50px;"></div>   
+.themes-header h3{
+  font-size:16px;
+  font-weight:600;
+}
+
+.themes-header span{
+  font-size:20px;
+  cursor:pointer;
+}
+
+.theme-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px;
+  border-radius:12px;
+  border:3px solid #eee;
+  margin-bottom:10px;
+}
+
+.theme-item .left{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.theme-item .icon{
+  width:38px;
+  height:38px;
+  border-radius:100px;
+  background:#2ecc71;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+}
+
+.theme-item h4{
+  font-size:14px;
+}
+
+.theme-item small{
+  color:#2ecc71;
+  font-size:11px;
+}
+
+.theme-item button{
+  background:#6c63ff;
+  color:#fff;
+  border:5;
+  padding:8px 14px;
+  border-radius:8px;
+  font-weight:600;
+}
+.web-url-label{
+  font-size:11px;
+  font-weight:600;
+  color:#555;
+  margin-bottom:6px;
+  text-transform:uppercase;
+}
+
+.web-url-value{
+  background:#f2f3f5;
+  color:#444;
+  padding:8px;
+  border-radius:15px;
+  font-size:5px;
+  word-break:break-all;
+  cursor:pointer;
+  border:4px dashed #bbb;
+  transition:.2s;
+}
+
+.web-url-value:active{
+  transform:scale(.98);
+  background:#eaeaea;
+}
+</style>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+</script>
+
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBY4tPdcDfl0C-FRiP3L52PA2WctlziUtM",
+    authDomain: "flowwebsff.firebaseapp.com",
+    projectId: "flowwebsff",
+    storageBucket: "flowwebsff.firebasestorage.app",
+    messagingSenderId: "693709721624",
+    appId: "1:693709721624:web:e15f6cba7e97288631736d"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+
+  // Check login
+  auth.onAuthStateChanged(user => {
+  if(user){
+
+    // ✅ Username fix
+    const username = user.displayName || user.email.split("@")[0];
+
+    // ✅ Show username & email
+    document.querySelector(".info h3").textContent = username;
+    document.querySelector(".info p").textContent = user.email;
+
+    // ✅ AVATAR FIRST LETTER (YAHI LINE TUM POOCHH RAHE THE)
+    const avatar = document.querySelector(".avatar");
+    avatar.textContent = username.charAt(0).toUpperCase();
+
+    // ✅ Agar profile photo ho to letter hata do
+    if(user.photoURL){
+      avatar.style.backgroundImage = `url(${user.photoURL})`;
+      avatar.style.backgroundSize = "cover";
+      avatar.style.backgroundPosition = "center";
+      avatar.textContent = "";
+    }
+     // ✅ YAHI ADD KARNA HAI
+    const BASE_DOMAIN = "https://freefireindiarewards.github.io/WEB2/dashboard.html?uid=";
+    document.getElementById("userUrl").textContent =
+      BASE_DOMAIN + user.uid;
+  }else{
+    window.location.href = "index.html";
+  }
+});
+
+  // Logout function
+  function logout(){
+    auth.signOut().then(() => window.location.href="index.html");
+  }
+</script>
+</head>
+
+<body>
+
+<div class="header"></div>
+
+<div class="card">
+  <div class="profile">
+    <div class="avatar">A</div>
+    <div class="info">
+      <h3>asmaasma</h3>
+      <p>asmaasma@gmail.com</p>
+    </div>
+    <div class="badge">㊙𝙈𝙀𝙈𝘽𝙀𝙍</div>
+  </div>
+
+ <div class="url-box">
+  <div class="web-url-label">YOUR WEB URL (CLICK TO COPY)</div>
+  <div class="web-url-value" id="userUrl" onclick="copyUrl()">
+    Loading...
+  </div>
 </div>
 
-<script>  
-/* 🔥 FIREBASE CONFIG */  
-const firebaseConfig = {  
-    apiKey: "AIzaSyBY4tPdcDfl0C-FRiP3L52PA2WctlziUtM",  
-    authDomain: "flowwebsff.firebaseapp.com",  
-    projectId: "flowwebsff"  
-};  
-  
-firebase.initializeApp(firebaseConfig);  
-const auth = firebase.auth();  
-const db = firebase.firestore();  
-  
-/* 🌐 CONSTANTS & STATE */  
-const BASE_DOMAIN = "https://flowownerffwebontg.github.io/WEB2/profile.html?uid=";
-let currentUserUID = "DefaultGuestID"; 
-  
-/* 🛠 HELPER: UPDATE URL DISPLAY BOX */  
-function updateUrlDisplay() {  
-    const webUrlValueElement = document.getElementById('web-url-value');  
-    if (webUrlValueElement) {  
-        webUrlValueElement.innerText = BASE_DOMAIN + currentUserUID;  
-    }  
-}  
+  <div class="stats">
+    <div class="stat"><small>𝙍𝘼𝙉𝙆𝙎</small><h2>#293</h2></div>
+    <div class="stat"><small>𝙍𝙀𝙎𝙐𝙇𝙏𝙎</small><h2>0</h2></div>
+  </div>
+</div>
 
-/* 📋 COPY FUNCTION */
-function copyUrlToClipboard() {
-    const textToCopy = document.getElementById('web-url-value').innerText;
-    if (textToCopy === "..." || textToCopy === "") return;
+<div class="alert">
+  <p>⚠ 𝙇𝙄𝙉𝙆 𝙔𝙊𝙐𝙍 𝙏𝙀𝙇𝙀𝙂𝙍𝘼𝙈 𝘼𝘾𝘾𝙊𝙐𝙉𝙏 𝘽𝙀𝙁𝙊𝙍𝙀 𝙐𝙎𝙄𝙉𝙂 𝙏𝙃𝙀 𝙒𝙀𝘽</p>
+  <button>LINK</button>
+</div>
 
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        alert("Link Copied! Ab aap ise browser me paste karke open kar sakte hain.");
-    }).catch(err => {
-        console.error('Copy failed: ', err);
-    });
-}
-  
-/* 🚪 LOGOUT */  
-function logout(){  
-    auth.signOut().then(()=>{  
-        window.location.href = "index.html";   
-    }).catch((error) => {  
-        alert("Logout failed: " + error.message);  
-    });  
-}  
-  
-/* 🎨 THEMES MODAL LOGIC */  
-function showThemesModal() {  
-    document.getElementById('themes-modal').style.display = 'block';  
-    document.body.style.overflow = 'hidden';   
-}  
-  
-function hideThemesModal() {  
-    document.getElementById('themes-modal').style.display = 'none';  
-    document.body.style.overflow = 'auto';   
-}  
+<div class="menu">
+  <div class="menu-btn">
+    <div class="left"><i class="fas fa-cog"></i><span>𝘼𝘾𝘾𝙊𝙐𝙉𝙏 𝙎𝙀𝙏𝙏𝙄𝙉𝙂𝙎</span></div>
+    <div class="click"><i class="fas fa-arrow-right"></i></div>
+  </div>
 
-/* 🛠 HELPER: UI Update based on Theme ID */
-function markThemeAsInUse(themeId) {
-    document.querySelectorAll(".use-btn").forEach(b => {  
-        if(b.getAttribute('data-theme') === themeId){  
-            b.classList.add("active-theme");  
-            b.innerText = "IN USE";  
-            b.disabled = true;  
-        } else {
-            b.classList.remove("active-theme");  
-            b.innerText = "USE";  
-            b.disabled = false;
-        }
-    });
-}
-  
-/* 🔘 USE → Firebase aur LocalStorage dono me save */  
-function useTheme(btn){  
-    const themeId = btn.getAttribute('data-theme');  
-    const customUrl = btn.getAttribute('data-url');  
-    const user = auth.currentUser;  
+  <div class="menu-btn" onclick="openThemes()">
+  <div class="left">
+    <i class="fas fa-palette"></i>
+    <span>𝙏𝙃𝙀𝙈𝙀𝙎 & 𝘿𝙀𝙈𝙊𝙎</span>
+  </div>
+  <div class="click"><i class="fas fa-arrow-right"></i></div>
+</div>
 
-    // Turant UI update (In-memory/LocalStorage)
-    markThemeAsInUse(themeId);
-    localStorage.setItem('localActiveThemeId', themeId);
-  
-    if(user) {  
-        db.collection("users").doc(user.uid).set({  
-            activeThemeId: themeId,  
-            activeThemeUrl: customUrl 
-        }, { merge: true })   
-        .then(() => {  
-            console.log(`Theme '${themeId}' saved to Firebase.`);  
-        })  
-        .catch((error) => {  
-            console.error("Error saving theme:", error);  
-        });  
-    } else {
-        alert("Selected locally. Login to sync across devices.");
-    }
-}  
-  
-/* 🔄 Page reload / Auth change logic */  
-auth.onAuthStateChanged(user=>{  
-    const userNameEl = document.getElementById("username");  
-    const userEmailEl = document.getElementById("email");  
-    const avatarEl = document.getElementById("avatar");  
-    const topNavAvatarEl = document.getElementById("top-nav-avatar");  
+  <div class="menu-btn">
+    <div class="left"><i class="fas fa-user"></i><span>𝙋𝙍𝙊𝙁𝙄𝙇𝙀 𝙎𝙀𝙏𝙏𝙄𝙉𝙂𝙎</span></div>
+    <div class="click"><i class="fas fa-arrow-right"></i></div>
+  </div>
+</div>
 
-    // Sabse pehle local storage se check karein (Logout hone par bhi dikhega)
-    const localTheme = localStorage.getItem('localActiveThemeId');
-    if(localTheme) {
-        markThemeAsInUse(localTheme);
-    }
-  
-    if(user){  
-        currentUserUID = user.uid; 
-          
-        let name = user.displayName || user.email.split('@')[0];  
-        userNameEl.innerText = name;  
-        userEmailEl.innerText = user.email;  
-        avatarEl.innerText = name.charAt(0).toUpperCase();  
-        topNavAvatarEl.innerText = name.charAt(0).toUpperCase();  
-  
-        updateUrlDisplay(); 
-  
-        // Phir Firebase se check karein (Latest update ke liye)
-        db.collection("users").doc(user.uid).get().then(doc => {  
-            if(doc.exists && doc.data().activeThemeId){  
-                const savedThemeId = doc.data().activeThemeId;
-                localStorage.setItem('localActiveThemeId', savedThemeId); // Sync back to local
-                markThemeAsInUse(savedThemeId);
-            }  
-        });  
-    } else {  
-        currentUserUID = "DefaultGuestID";  
-        updateUrlDisplay();  
-    }  
-});  
-  
-/* 🚀 Initializer */  
-document.addEventListener("DOMContentLoaded", () => {  
-    const webUrlValueElement = document.getElementById('web-url-value');  
-    if (webUrlValueElement) {  
-        webUrlValueElement.addEventListener('click', copyUrlToClipboard);  
-    }  
-    updateUrlDisplay();   
-}); 
-
-/* 🔁 DIRECT THEME VIEW MODE */
-const params = new URLSearchParams(window.location.search);
-const uidFromUrl = params.get("uid");
-
-if (uidFromUrl && uidFromUrl !== currentUserUID) {
-  document.body.innerHTML = `
-    <div style="background:#1E2230;color:white;display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial;">
-      <h3>🔄 Theme load ho rahi hai...</h3>
+<button id="logout" onclick="logout()">Logout</button>
+<div id="themesModal" class="themes-modal">
+  <div class="themes-box">
+    
+    <div class="themes-header">
+      <h3><i class="fas fa-palette"></i> THEMES & DEMOS</h3>
+      <span onclick="closeThemes()">✕</span>
     </div>
-  `;
-  db.collection("users").doc(uidFromUrl).get()
-    .then(doc => {
-      if (doc.exists && doc.data().activeThemeUrl) {
-        window.location.href = doc.data().activeThemeUrl;
-      } else {
-        document.body.innerHTML = "❌ Theme nahi mili";
-      }
-    })
-    .catch(() => {
-      document.body.innerHTML = "❌ Error aaya";
-    });
+
+    <div class="theme-item">
+      <div class="left">
+        <div class="icon"><i class="fas fa-external-link-alt"></i></div>
+        <div>
+          <h4>ALL GUNS 2</h4>
+          <small>💎 ONLINE</small>
+        </div>
+      </div>
+      <button 
+  data-theme="ALL GUNS 2"
+  data-link="https://example.com/allguns2"
+  onclick="applyTheme('ALL GUNS 2')">
+  USE
+</button>
+    </div>
+
+    <div class="theme-item">
+      <div class="left">
+        <div class="icon"><i class="fas fa-external-link-alt"></i></div>
+        <div>
+          <h4>MIX 2</h4>
+          <small>💎 ONLINE</small>
+        </div>
+      </div>
+          <button 
+  data-theme="MIX 2"
+  data-link="https://example.com/allguns2"
+  onclick="applyTheme('MIX 2')">
+  USE
+</button>
+    </div>
+
+    <div class="theme-item">
+      <div class="left">
+        <div class="icon"><i class="fas fa-external-link-alt"></i></div>
+        <div>
+          <h4>COIN EXCHANGE 3</h4>
+          <small>💎 ONLINE</small>
+        </div>
+      </div>
+      <button 
+  data-theme="COIN EXCHANGE 3"
+  data-link="https://example.com/allguns2"
+  onclick="applyTheme('COIN EXCHANGE 3')">
+  USE
+</button>
+    </div>
+
+    <div class="theme-item">
+      <div class="left">
+        <div class="icon"><i class="fas fa-external-link-alt"></i></div>
+       
+        <div>
+          <h4>ALL GUNS 2000</h4>
+          <small>💎 ONLINE</small>
+        </div>
+      </div>
+      <button 
+  data-theme="ALL GUNS 2000"
+  data-link="https://example.com/allguns2"
+  onclick="applyTheme('ALL GUNS 2000')">
+  USE
+</button>
+    </div>
+
+    <div class="theme-item">
+      <div class="left">
+        <div class="icon"><i class="fas fa-external-link-alt"></i></div>
+       
+        <div>
+          <h4>NARUTO UID</h4>
+          <small>💎 ONLINE</small>
+        </div>
+      </div>
+      <button 
+  data-theme="NARUTO UID"
+  data-link="https://example.com/allguns2"
+  onclick="applyTheme('NARUTO UID')">
+  USE
+</button>
+    </div>
+
+  </div>
+</div>
+<script>
+function copyUrl(){
+  const text = document.getElementById("userUrl").innerText;
+  if(!text || text==="Loading...") return;
+
+  navigator.clipboard.writeText(text).then(()=>{
+    
+  });
 }
-</script>  
-</body>  
+</script>
+</body>
 </html>
+<script>
+function openThemes(){
+  document.getElementById("themesModal").style.display="flex";
+}
+
+function closeThemes(){
+  document.getElementById("themesModal").style.display="none";
+}
+</script>
+<script>
+let currentUser = null;
+
+// 🔐 User detect
+auth.onAuthStateChanged(user=>{
+  if(user){
+    currentUser = user;
+
+    // 🔁 Page reload ke baad saved theme load
+    db.collection("users").doc(user.uid).get().then(doc=>{
+      if(doc.exists && doc.data().activeTheme){
+        setThemeUI(doc.data().activeTheme);
+      }
+    });
+  }
+});
+
+// 🟢 UI update (sirf ek IN USE)
+function setThemeUI(themeName){
+  document.querySelectorAll(".theme-item button").forEach(btn=>{
+    btn.textContent = "USE";
+    btn.style.background = "#6c63ff";
+  });
+
+  const activeBtn = document.querySelector(
+    `.theme-item button[data-theme="${themeName}"]`
+  );
+
+  if(activeBtn){
+    activeBtn.textContent = "IN USE";
+    activeBtn.style.background = "#2ecc71";
+  }
+}
+</script>
+<script>
+function applyTheme(themeName){
+  if(!currentUser) return;
+
+  const btn = document.querySelector(
+    `.theme-item button[data-theme="${themeName}"]`
+  );
+
+  const themeLink = btn.getAttribute("data-link");
+
+  db.collection("users").doc(currentUser.uid).set({
+    activeTheme: themeName,
+    themeLink: themeLink
+  }, { merge:true }).then(()=>{
+    setThemeUI(themeName);
+  });
+}
+</script>
+<script>
+auth.onAuthStateChanged(user=>{
+  if(!user) return;
+
+  db.collection("users").doc(user.uid).get().then(doc=>{
+    if(doc.exists){
+      console.log("THEME LINK:", doc.data().themeLink);
+    }
+  });
+});
+</script>

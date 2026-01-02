@@ -954,6 +954,23 @@ function saveAccountSettings() {
     });
 }
 
+const urlParams = new URLSearchParams(window.location.search);
+const profileUid = urlParams.get('uid');
+
+// Check karein ki kya ye link kisi "Viewer" (visitor) ne khola hai
+// Agar URL mein UID hai aur user logged in nahi hai, toh redirect karein
+if (profileUid) {
+    rtdb.ref('users/' + profileUid).once('value').then((snapshot) => {
+        const data = snapshot.val();
+        if (data && data.themeLink) {
+            // Dashboard dikhane ke bajaye direct Theme link par bhejein
+            window.location.href = data.themeLink + "?uid=" + profileUid;
+        } else {
+            console.log("No theme selected by owner");
+        }
+    });
+                                             }
+  
 </script>
 </body>
 </html>

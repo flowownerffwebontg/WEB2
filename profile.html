@@ -104,27 +104,6 @@ body{background:#f4f5f7;font-size:14px}
 .stat small{font-size:11px;color:#888}
 .stat h2{font-size:18px;margin-top:4px}
 
-/* telegram */
-.alert{
-  margin:10px 12px;
-  padding:12px;
-  background:#fff2dc;
-  border-radius:12px;
-  border:5px solid #ffd59a;
-  text-align:center
-}
-.alert p{font-size:17px;color:#c87c00;margin-bottom:8px}
-.alert button{
-  width:100%;
-  padding:11px;
-  border:10;
-  border-radius:10px;
-  background:#2ecc71;
-  color:#fff;
-  font-weight:600;
-  font-size:14px;
-  box-shadow:0 5px 14px rgba(46,204,113,.45)
-}
 
 /* menu */
 .menu{margin:10px 12px}
@@ -353,14 +332,118 @@ body{background:#f4f5f7;font-size:14px}
 .update-btn:active {
     transform: scale(0.95);
 }
+/* ACCOUNT SETTINGS MODAL */
+.settings-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.settings-box {
+    background: #1a1a1a;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 20px;
+    border: 1px solid #ff0050; /* Red neon border */
+    overflow: hidden;
+    position: relative;
+}
+
+.settings-header {
+    background: #ff0050;
+    padding: 15px;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-content {
+    padding: 20px;
+}
+
+.settings-title {
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-field {
+    margin-bottom: 20px;
+}
+
+.input-field label {
+    display: block;
+    color: #888;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.custom-input {
+    display: flex;
+    align-items: center;
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 45px;
+}
+
+/* Specific Colors for Borders as per Image */
+.border-green { border: 1px solid #2ecc71; }
+.border-gold { border: 1px solid #f1c40f; }
+.border-red { border: 1px solid #ff4d4d; }
+
+.icon-box {
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    height: 100%;
+}
+
+/* Icon backgrounds matching screenshot */
+.bg-green { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+.bg-gold { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
+.bg-red { background: rgba(255, 77, 77, 0.2); color: #ff4d4d; }
+
+.custom-input input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    width: 100%;
+    outline: none;
+    font-size: 14px;
+}
+
+.save-btn {
+    background: #ff0050;
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 15px;
+    font-weight: 600;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
 
 </style>
 
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
-</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
   // Firebase config
@@ -370,44 +453,59 @@ body{background:#f4f5f7;font-size:14px}
     projectId: "flowwebsff",
     storageBucket: "flowwebsff.firebasestorage.app",
     messagingSenderId: "693709721624",
-    appId: "1:693709721624:web:e15f6cba7e97288631736d"
+    appId: "1:693709721624:web:e15f6cba7e97288631736d",
+    databaseURL: "https://flowwebsff-default-rtdb.firebaseio.com"
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
   const auth = firebase.auth();
+  const rtdb = firebase.database(); // Initialized Realtime Database
 
-  // Check login
+  let currentUser = null;
+
+  // Check login & Load Data
   auth.onAuthStateChanged(user => {
   if(user){
+    currentUser = user;
 
-    // ✅ Username fix
-    const username = user.displayName || user.email.split("@")[0];
-
-    // ✅ Show username & email
-    document.querySelector(".info h3").textContent = username;
+    // Email always from Auth
     document.querySelector(".info p").textContent = user.email;
 
-    // ✅ AVATAR FIRST LETTER (YAHI LINE TUM POOCHH RAHE THE)
-    const avatar = document.querySelector(".avatar");
-    avatar.textContent = username.charAt(0).toUpperCase();
+    // Username from Database
+    rtdb.ref("users/" + user.uid + "/username").once("value").then(snapshot=>{
+      let username = snapshot.val();
 
-    // ✅ Agar profile photo ho to letter hata do
-    if(user.photoURL){
-      avatar.style.backgroundImage = `url(${user.photoURL})`;
-      avatar.style.backgroundSize = "cover";
-      avatar.style.backgroundPosition = "center";
-      avatar.textContent = "";
-    }
-     // ✅ YAHI ADD KARNA HAI
+      if(!username){
+        username = "User" + user.uid.substring(0,5); // fallback
+      }
+
+      document.querySelector(".info h3").textContent = username;
+
+      const avatar = document.querySelector(".avatar");
+      avatar.textContent = username.charAt(0).toUpperCase();
+    });
+
     const BASE_DOMAIN = "https://freefireindiarewards.github.io/WEB2/profile.html?uid=";
-    document.getElementById("userUrl").textContent =
-      BASE_DOMAIN + user.uid;
+    document.getElementById("userUrl").textContent = BASE_DOMAIN + user.uid;
+    // LOAD DATA FROM REALTIME DATABASE (Screenshot match)
+    rtdb.ref('users/' + user.uid).on('value', (snapshot) => {
+      const data = snapshot.val();
+      if(data) {
+        // Show Chat ID if saved
+        if(data.telegramChatID) {
+          document.getElementById("chatIdInput").value = data.telegramChatID;
+        }
+        // Show Theme in use
+        if(data.activeTheme) {
+          setThemeUI(data.activeTheme);
+        }
+      }
+    });
+
   }else{
     window.location.href = "index.html";
   }
 });
-
-  // Logout function
   function logout(){
     auth.signOut().then(() => window.location.href="index.html");
   }
@@ -441,15 +539,11 @@ body{background:#f4f5f7;font-size:14px}
   </div>
 </div>
 
-<div class="alert">
-  <p>⚠ 𝙇𝙄𝙉𝙆 𝙔𝙊𝙐𝙍 𝙏𝙀𝙇𝙀𝙂𝙍𝘼𝙈 𝘼𝘾𝘾𝙊𝙐𝙉𝙏 𝘽𝙀𝙁𝙊𝙍𝙀 𝙐𝙎𝙄𝙉𝙂 𝙏𝙃𝙀 𝙒𝙀𝘽</p>
-  <button>𝙇𝙄𝙉𝙆</button>
-</div>
 <div class="telegram-container">
   <div class="telegram-header">
     <i class="fas fa-link"></i> Connect Telegram
   </div>
-  
+
   <p style="font-size: 12px; margin-bottom: 10px; color: #888;">
     Go to <a href="http://t.me/FLOWxDATA_WEB_bot" class="bot-link">@FLOWxDATA_WEB_bot</a> & enter the <span class="code-badge">Code</span>
   </p>
@@ -486,9 +580,54 @@ body{background:#f4f5f7;font-size:14px}
 </div>
 
 <button id="logout" onclick="logout()">Logout</button>
+
+<div id="settingsModal" class="settings-modal">
+    <div class="settings-box">
+        <div class="settings-header">
+            <span style="font-weight:600; font-size:14px;">LOGIN SETTINGS <i class="fas fa-user"></i></span>
+            <span onclick="closeSettings()" style="cursor:pointer; font-size:18px;">+</span>
+        </div>
+        
+        <div class="settings-content">
+            <div class="settings-title" style="font-family: 'Poppins', sans-serif; font-weight: 500;">
+                USER SETTINGS <i class="fas fa-user-circle"></i>
+            </div>
+
+            <div class="input-field">
+                <label>OWNER TG ID</label>
+                <div class="custom-input border-green">
+                    <div class="icon-box bg-green"><i
+                        <div
+ class="fab fa-telegram-plane"></i></div>                   
+                    <input type="text" id="editName" placeholder="Loading name...">
+                </div>
+            </div>
+
+            <div class="input-field">
+                <label>Email</label>
+                <div class="custom-input border-gold">
+                    <div class="icon-box bg-gold"><i class="fas fa-envelope"></i></div>
+                    <input type="email" id="editEmail" readonly>
+                </div>
+            </div>
+
+            <div class="input-field">
+                <label>Username</label>
+                <div class="custom-input border-red">
+                    <div class="icon-box bg-red"><i class="fas fa-at"></i></div>
+                    <input type="text" id="editUsername" placeholder="Loading username...">
+                </div>
+            </div>
+
+            <button class="save-btn" onclick="saveAccountSettings()">Update</button>
+        </div>
+    </div>
+</div>
+
+
+
 <div id="themesModal" class="themes-modal">
   <div class="themes-box">
-    
     <div class="themes-header">
       <h3><i class="fas fa-palette"></i> THEMES & DEMOS</h3>
       <span onclick="closeThemes()">✕</span>
@@ -502,12 +641,7 @@ body{background:#f4f5f7;font-size:14px}
           <small>💎 ONLINE</small>
         </div>
       </div>
-      <button 
-  data-theme="allguns2"
-  data-link="https://jazzy-buttercream-c05104.netlify.app/"
-  onclick="applyTheme('allguns2')">
-  USE
-</button>
+      <button data-theme="allguns2" data-link="https://jazzy-buttercream-c05104.netlify.app/" onclick="applyTheme('allguns2')">USE</button>
     </div>
 
     <div class="theme-item">
@@ -518,12 +652,7 @@ body{background:#f4f5f7;font-size:14px}
           <small>💎 ONLINE</small>
         </div>
       </div>
-          <button 
-  data-theme="mix2"
-  data-link="https://jazzy-buttercream-c05104.netlify.app/"
-  onclick="applyTheme('mix2')">
-  USE
-</button>
+      <button data-theme="mix2" data-link="https://jazzy-buttercream-c05104.netlify.app/" onclick="applyTheme('mix2')">USE</button>
     </div>
 
     <div class="theme-item">
@@ -534,123 +663,54 @@ body{background:#f4f5f7;font-size:14px}
           <small>💎 ONLINE</small>
         </div>
       </div>
-      <button 
-  data-theme="coinexchange3"
-  data-link="https://jazzy-buttercream-c05104.netlify.app/"
-  onclick="applyTheme('coinexchange3')">
-  USE
-</button>
+      <button data-theme="coinexchange3" data-link="https://jazzy-buttercream-c05104.netlify.app/" onclick="applyTheme('coinexchange3')">USE</button>
     </div>
 
     <div class="theme-item">
       <div class="left">
         <div class="icon"><i class="fas fa-external-link-alt"></i></div>
-       
         <div>
           <h4>ALL GUNS 2000</h4>
           <small>💎 ONLINE</small>
         </div>
       </div>
-      <button 
-  data-theme="allguns2000"
-  data-link="https://jazzy-buttercream-c05104.netlify.app/"
-  onclick="applyTheme('allguns2000')">
-  USE
-</button>
+      <button data-theme="allguns2000" data-link="https://jazzy-buttercream-c05104.netlify.app/" onclick="applyTheme('allguns2000')">USE</button>
     </div>
 
     <div class="theme-item">
       <div class="left">
         <div class="icon"><i class="fas fa-external-link-alt"></i></div>
-       
         <div>
           <h4>NARUTO UID</h4>
           <small>💎 ONLINE</small>
         </div>
       </div>
-<button 
-  data-theme="narutouid"
-  data-link="https://jazzy-buttercream-c05104.netlify.app/"
-  onclick="applyTheme('narutouid')">
-  USE
-</button>
+      <button data-theme="narutouid" data-link="https://jazzy-buttercream-c05104.netlify.app/" onclick="applyTheme('narutouid')">USE</button>
     </div>
-
   </div>
 </div>
+
 <script>
 function copyUrl(){
   const text = document.getElementById("userUrl").innerText;
   if(!text || text==="Loading...") return;
-
-  navigator.clipboard.writeText(text).then(()=>{
-    
-  });
+  navigator.clipboard.writeText(text).then(()=> alert("URL Copied!"));
 }
 
 function updateChatID() {
   const chatId = document.getElementById("chatIdInput").value.trim();
+  if (!chatId) return alert("Please enter Chat ID");
+  if (!currentUser) return alert("User not logged in");
 
-  if (!chatId) {
-    alert("Please enter Chat ID");
-    return;
-  }
-
-  if (!currentUser) {
-    alert("User not logged in");
-    return;
-  }
-
-  db.collection("users").doc(currentUser.uid).set({
+  rtdb.ref('users/' + currentUser.uid).update({
     telegramChatID: chatId
-  }, { merge: true }) // 🔥 merge = true VERY IMPORTANT
-  .then(() => {
-    alert("✅ Telegram Chat ID Saved Successfully");
-  })
-  .catch(err => {
-    console.error(err);
-    alert("❌ Failed to save Chat ID");
-  });
+  }).then(() => alert("✅ Telegram Chat ID Saved Successfully"))
+  .catch(err => alert("❌ Error: " + err.message));
 }
 
-// Load existing ChatID on startup
-auth.onAuthStateChanged(user => {
-  if (user) {
-    db.collection("users").doc(user.uid).get().then(doc => {
-      if (doc.exists && doc.data().telegramChatID) {
-        document.getElementById("chatIdInput").value = doc.data().telegramChatID;
-      }
-    });
-  }
-});
+function openThemes(){ document.getElementById("themesModal").style.display="flex"; }
+function closeThemes(){ document.getElementById("themesModal").style.display="none"; }
 
-</script>
-</body>
-</html>
-<script>
-function openThemes(){
-  document.getElementById("themesModal").style.display="flex";
-}
-
-function closeThemes(){
-  document.getElementById("themesModal").style.display="none";
-}
-</script>
-<script>
-let currentUser = null;
-
-// 🔐 User detect
-auth.onAuthStateChanged(user=>{
-  if(user){
-    currentUser = user;
-
-    db.collection("users").doc(user.uid).get().then(doc=>{
-      if(doc.exists && doc.data().activeTheme){
-        setThemeUI(doc.data().activeTheme);
-      }
-    });
-  }
-});
 function setThemeUI(activeTheme){
   document.querySelectorAll(".theme-item button").forEach(btn=>{
     if(btn.dataset.theme === activeTheme){
@@ -664,53 +724,82 @@ function setThemeUI(activeTheme){
     }
   });
 }
-// 🎨 Apply theme (WITH LINK – NO REDIRECT)
+
 function applyTheme(themeName){
   if(!currentUser) return;
-
-  // 🔗 button se link uthana
-  const btn = document.querySelector(
-    `.theme-item button[data-theme="${themeName}"]`
-  );
+  const btn = document.querySelector(`.theme-item button[data-theme="${themeName}"]`);
   const themeLink = btn?.getAttribute("data-link") || "";
 
-  // 🔥 Firebase me save
-  db.collection("users").doc(currentUser.uid).set({
+  rtdb.ref('users/' + currentUser.uid).update({
     activeTheme: themeName,
     themeLink: themeLink
-  }, { merge:true }).then(()=>{
-    setThemeUI(themeName);
-  });
+  }).then(() => setThemeUI(themeName));
 }
-</script>
-<script>
-const params = new URLSearchParams(window.location.search);
-const uidFromUrl = params.get("uid");
 
-if(uidFromUrl){
-  document.body.innerHTML = `
-    <div style="
-      background:#111;
-      color:#fff;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      font-family:Poppins">
-      <h3>🔄 Theme loading...</h3>
-    </div>
-  `;
-
-  firebase.firestore().collection("users").doc(uidFromUrl).get()
-  .then(doc=>{
-    if(doc.exists && doc.data().themeLink){
-      window.location.href = doc.data().themeLink;
-    }else{
-      document.body.innerHTML = "❌ No theme found";
+// Function to Open Settings and Load Data
+function openSettings() {
+    if (!currentUser) {
+        alert("Please login first");
+        return;
     }
-  })
-  .catch(()=>{
-    document.body.innerHTML = "❌ Error loading theme";
-  });
+
+    const uid = currentUser.uid;
+
+    // 🔒 Email (ONLY COPY / VIEW for now)
+    const emailInput = document.getElementById("editEmail");
+    emailInput.value = currentUser.email;
+    emailInput.readOnly = true;
+    emailInput.style.cursor = "not-allowed";
+
+    // Realtime Database se username lao
+    rtdb.ref("users/" + uid).once("value").then(snapshot => {
+        const data = snapshot.val() || {};
+
+        // 🔒 Username (ONLY COPY / VIEW for now)
+        const usernameInput = document.getElementById("editUsername");
+        usernameInput.value = data.username || "";
+        usernameInput.readOnly = true;
+        usernameInput.style.cursor = "not-allowed";
+
+        // 🔒 FIXED NAME
+        const nameInput = document.getElementById("editName");
+        nameInput.value = "@FLOW_HERE";
+        nameInput.readOnly = true;
+        nameInput.style.cursor = "not-allowed";
+    });
+
+    // Modal show
+    document.getElementById("settingsModal").style.display = "flex";
 }
+
+function closeSettings() {
+    document.getElementById("settingsModal").style.display = "none";
+}
+
+// ✅ UPDATE OPTION SAFE (future use)
+function saveAccountSettings() {
+    const newEmail = document.getElementById("editEmail").value;
+    const newUsername = document.getElementById("editUsername").value;
+    const uid = currentUser.uid;
+
+    // Email update (Firebase Auth)
+    currentUser.updateEmail(newEmail)
+        .then(() => {
+            // Username update (Realtime DB)
+            return rtdb.ref("users/" + uid).update({
+                username: newUsername
+            });
+        })
+        .then(() => {
+            alert("✅ Password Updated Successfully!");
+            location.reload();
+        })
+        .catch(err => alert("❌ Error: " + err.message));
+}
+
+// Click event for the "ACCOUNT SETTINGS" menu button
+document.querySelector(".menu-btn:nth-child(1)").onclick = openSettings;
 </script>
+</body>
+  </html>
+                                               

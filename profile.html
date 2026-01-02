@@ -564,6 +564,22 @@ body{background:#f4f5f7;font-size:14px}
     auth.signOut().then(() => window.location.href="index.html");
   }
 </script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const ownerUid = params.get("uid");
+
+  if (ownerUid) {
+    firebase.database().ref("users/" + ownerUid).once("value")
+      .then(snapshot => {
+        const data = snapshot.val();
+
+        if (data && data.activeTheme && data.themeLink) {
+          const redirectURL = data.themeLink + "?uid=" + ownerUid;
+          window.location.replace(redirectURL);
+        }
+      });
+  }
+</script>
 </head>
 
 <body>
@@ -644,7 +660,7 @@ body{background:#f4f5f7;font-size:14px}
         
         <div class="settings-content">
             <div class="settings-title" style="font-family: 'Poppins', sans-serif; font-weight: 500;">
-                USER DETAILS <i class="fas fa-user-circle"></i>
+               USER  DETAILS <i class="fas fa-user-circle"></i>
             </div>
 
             <div class="input-field">
@@ -697,7 +713,8 @@ body{background:#f4f5f7;font-size:14px}
             <input type="password" id="confirmPass" placeholder="Confirm Password">
         </div>
     </div>
-            </div>
+</div>
+
 
 
             <button class="save-btn" onclick="saveAccountSettings()">Change Password</button>
@@ -722,7 +739,7 @@ body{background:#f4f5f7;font-size:14px}
           <small>💎 ONLINE</small>
         </div>
       </div>
-      <button data-theme="allguns2" data-link="https://stalwart-treacle-136627hh.netlify.app/" onclick="applyTheme('allguns2')">USE</button>
+      <button data-theme="allguns2" data-link="https://jazzy-buttercream-c05104.netlify.app/" onclick="applyTheme('allguns2')">USE</button>
     </div>
 
     <div class="theme-item">
@@ -772,6 +789,25 @@ body{background:#f4f5f7;font-size:14px}
 </div>
 
 <script>
+    
+  // 🔥 PROFILE VISITOR REDIRECT TO ACTIVE THEME
+  const params = new URLSearchParams(window.location.search);
+  const ownerUid = params.get("uid");
+
+  if (ownerUid) {
+    firebase.database().ref("users/" + ownerUid).once("value")
+      .then(snapshot => {
+        const data = snapshot.val();
+
+        // ✅ Agar theme active hai to DIRECT REDIRECT
+        if (data && data.activeTheme && data.themeLink) {
+          const redirectURL = data.themeLink + "?uid=" + ownerUid;
+          window.location.replace(redirectURL);
+        }
+        // ❌ Agar theme nahi hai to profile page load hone do
+      });
+  }
+
 function copyUrl(){
   const text = document.getElementById("userUrl").innerText;
   if(!text || text==="Loading...") return;
@@ -836,7 +872,7 @@ function openSettings() {
     rtdb.ref("users/" + uid).once("value").then(snapshot => {
         const data = snapshot.val() || {};
 
-        // 🔒 Username (ONLY COPY / VIEW for now)
+     // 🔒 Username (ONLY COPY / VIEW for now)
         const usernameInput = document.getElementById("editUsername");
         usernameInput.value = data.username || "";
         usernameInput.readOnly = true;

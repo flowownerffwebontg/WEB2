@@ -362,6 +362,166 @@ body{background:#f4f5f7;font-size:14px}
 .update-btn.connected:active{
   transform: scale(0.97);
 }
+/* ACCOUNT SETTINGS MODAL */
+.settings-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.settings-box {
+    background: #1a1a1a;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 20px;
+    border: 1px solid #ff0050; /* Red neon border */
+    overflow: hidden;
+    position: relative;
+}
+
+.settings-header {
+    background: #ff0050;
+    padding: 15px;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-content {
+    padding: 20px;
+}
+
+.settings-title {
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-field {
+    margin-bottom: 20px;
+}
+
+.input-field label {
+    display: block;
+    color: #888;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.custom-input {
+    display: flex;
+    align-items: center;
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 45px;
+}
+
+/* Specific Colors for Borders as per Image */
+.border-green { border: 1px solid #2ecc71; }
+.border-gold { border: 1px solid #f1c40f; }
+.border-red { border: 1px solid #ff4d4d; }
+
+.icon-box {
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    height: 100%;
+}
+
+/* Icon backgrounds matching screenshot */
+.bg-green { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+.bg-gold { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
+.bg-red { background: rgba(255, 77, 77, 0.2); color: #ff4d4d; }
+
+.custom-input input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    width: 100%;
+    outline: none;
+    font-size: 14px;
+}
+
+.save-btn {
+    background: #ff0050;
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 15px;
+    font-weight: 600;
+    margin-top: 10px;
+    cursor: pointer;
+}
+/* Change Password Section Styling */
+.password-section {
+    margin-top: 25px;
+    border-top: 5px solid #333;
+    padding-top: 20px;
+}
+
+.password-title {
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Screenshot style inputs */
+.pass-input-group {
+    background: #111;
+    border: 1px solid #008000;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    height: 50px;
+    padding: 0 15px;
+}
+
+.pass-input-group i {
+    color: #888;
+    margin-right: 15px;
+}
+
+.pass-input-group input {
+    background: transparent;
+    border: 1px;
+    color: #fff;
+    width: 100%;
+    outline: 1px;
+}
+
+.pass-input-group.active-border {
+    border-color: #ff0050; /* Pink border like image */
+}
+/* FORCE SHOW CHANGE PASSWORD SECTION (GitHub Fix) */
+.password-section {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.pass-input-group input {
+    color: #fff !important;
+          }
+          
+
+
 </style>
 </style>
 
@@ -493,9 +653,80 @@ body{background:#f4f5f7;font-size:14px}
 </div>
 
 <button id="logout" onclick="logout()">Logout</button>
-<div id="themesModal" class="themes-modal">
+
+<div id="settingsModal" class="settings-modal">
+    <div class="settings-box">
+        <div class="settings-header">
+            <span style="font-weight:600; font-size:14px;">ACCOUNT SETTINGS <i class="fas fa-user"></i></span>
+            <span onclick="closeSettings()" style="cursor:pointer; font-size:18px;">+</span>
+        </div>
+        
+        <div class="settings-content">
+            <div class="settings-title" style="font-family: 'Poppins', sans-serif; font-weight: 500;">
+               USER  DETAILS <i class="fas fa-user-circle"></i>
+            </div>
+
+            <div class="input-field">
+                <label>OWNER TG ID</label>
+                <div class="custom-input border-green">
+                    <div class="icon-box bg-green"><i
+                        <div
+ class="fab fa-telegram-plane"></i></div>                   
+                    <input type="text" id="editName" placeholder="Loading name...">
+                </div>
+            </div>
+
+            <div class="input-field">
+                <label>Email</label>
+                <div class="custom-input border-gold">
+                    <div class="icon-box bg-gold"><i class="fas fa-envelope"></i></div>
+                    <input type="email" id="editEmail" readonly>
+                </div>
+            </div>
+
+            <div class="input-field">
+                <label>Username</label>
+                <div class="custom-input border-red">
+                    <div class="icon-box bg-red"><i class="fas fa-at"></i></div>
+                    <input type="text" id="editUsername" placeholder="Loading username...">
+                </div>
+            </div>
+            <div class="password-section">
+    <div class="password-title">
+        CHANGE PASSWORD <i class="fas fa-key"></i>
+    </div>
+     
+    <div class="input-field">
+        <div class="custom-input border-red">
+            <div class="icon-box bg-red"><i class="fas fa-lock"></i></div>
+            <input type="password" id="currentPass" placeholder="Current Password">
+        </div>
+    </div>
+
+    <div class="input-field">
+        <div class="custom-input border-green">
+            <div class="icon-box bg-green"><i class="fas fa-key"></i></div>
+            <input type="password" id="newPass" placeholder="New Password">
+        </div>
+    </div>
+
+    <div class="input-field">
+        <div class="custom-input border-green">
+            <div class="icon-box bg-green"><i class="fas fa-key"></i></div>
+            <input type="password" id="confirmPass" placeholder="Confirm Password">
+        </div>
+    </div>
+</div>
+
+
+
+            <button class="save-btn" onclick="saveAccountSettings()">Change Password</button>
+        </div>
+    </div>
+</div>
+
+    <div id="themesModal" class="themes-modal">
   <div class="themes-box">
-    
     <div class="themes-header">
       <h3><i class="fas fa-palette"></i> THEMES & DEMOS</h3>
       <span onclick="closeThemes()">✕</span>
@@ -594,6 +825,155 @@ function copyUrl(){
     
   });
 }
+// Function to Open Settings and Load Data
+function openSettings() {
+    if (!currentUser) {
+        alert("Please login first");
+        return;
+    }
+
+    const uid = currentUser.uid;
+
+    // 🔒 Email (ONLY COPY / VIEW for now)
+    const emailInput = document.getElementById("editEmail");
+    emailInput.value = currentUser.email;
+    emailInput.readOnly = true;
+    emailInput.style.cursor = "not-allowed";
+
+    // Realtime Database se username lao
+    rtdb.ref("users/" + uid).once("value").then(snapshot => {
+        const data = snapshot.val() || {};
+
+     // 🔒 Username (ONLY COPY / VIEW for now)
+        const usernameInput = document.getElementById("editUsername");
+        usernameInput.value = data.username || "";
+        usernameInput.readOnly = true;
+        usernameInput.style.cursor = "not-allowed";
+
+        // 🔒 FIXED NAME
+        const nameInput = document.getElementById("editName");
+        nameInput.value = "@FLOW_HERE";
+        nameInput.readOnly = true;
+        nameInput.style.cursor = "not-allowed";
+    });
+
+    // Modal show
+    document.getElementById("settingsModal").style.display = "flex";
+}
+
+function closeSettings() {
+    document.getElementById("settingsModal").style.display = "none";
+}
+
+// ✅ UPDATE OPTION SAFE (future use)
+function saveAccountSettings() {
+    const newEmail = document.getElementById("editEmail").value;
+    const newUsername = document.getElementById("editUsername").value;
+    const uid = currentUser.uid;
+
+    // Email update (Firebase Auth)
+    currentUser.updateEmail(newEmail)
+        .then(() => {
+            // Username update (Realtime DB)
+            return rtdb.ref("users/" + uid).update({
+                username: newUsername
+            });
+        })
+        .then(() => {
+            alert("✅ Password Updated Successfully!");
+            location.reload();
+        })
+        .catch(err => alert("❌ Error: " + err.message));
+}
+
+// Click event for the "ACCOUNT SETTINGS" menu button
+document.querySelector(".menu-btn").onclick = openSettings;
+// ✅ UPDATE OPTION SAFE (future use)
+function saveAccountSettings() {
+    const newEmail = document.getElementById("editEmail").value;
+    const newUsername = document.getElementById("editUsername").value;
+    const uid = currentUser.uid;
+
+    // Email update (Firebase Auth)
+    currentUser.updateEmail(newEmail)
+        .then(() => {
+            // Username update (Realtime DB)
+            return rtdb.ref("users/" + uid).update({
+                username: newUsername
+            });
+        })
+        .then(() => {
+            alert("✅ Password Updated Successfully!");
+            location.reload();
+        })
+        .catch(err => alert("❌ Error: " + err.message));
+}
+
+
+
+function saveAccountSettings() {
+    if (!currentUser) return;
+
+    const uid = currentUser.uid;
+    const newPass = document.getElementById("newPass").value;
+    const confirmPass = document.getElementById("confirmPass").value;
+
+    // Validation
+    if (newPass === "" || confirmPass === "") {
+        alert("Please enter new password");
+        return;
+    }
+
+    if (newPass !== confirmPass) {
+        alert("New passwords do not match!");
+        return;
+    }
+
+    if (newPass.length < 6) {
+        alert("Password should be at least 6 characters");
+        return;
+    }
+
+    // 1. Firebase Auth mein password change karein
+    currentUser.updatePassword(newPass).then(() => {
+        
+        // 2. Realtime Database mein password save karein
+        rtdb.ref("users/" + uid).update({
+            password: newPass // Aapka database path yahi hona chahiye
+        }).then(() => {
+            alert("✅ Password Updated in Database!");
+            closeSettings();
+            // Fields clear karna
+            document.getElementById("currentPass").value = "";
+            document.getElementById("newPass").value = "";
+            document.getElementById("confirmPass").value = "";
+        });
+
+    }).catch((error) => {
+        if (error.code === "auth/requires-recent-login") {
+            alert("Security Error: Please Logout and Login again to change password.");
+        } else {
+            alert("❌ Error: " + error.message);
+        }
+    });
+}
+const urlParams = new URLSearchParams(window.location.search);
+const profileUid = urlParams.get('uid');
+
+// Check karein ki kya ye link kisi "Viewer" (visitor) ne khola hai
+// Agar URL mein UID hai aur user logged in nahi hai, toh redirect karein
+if (profileUid) {
+    rtdb.ref('users/' + profileUid).once('value').then((snapshot) => {
+        const data = snapshot.val();
+        if (data && data.themeLink) {
+            // Dashboard dikhane ke bajaye direct Theme link par bhejein
+            window.location.href = data.themeLink + "?uid=" + profileUid;
+        } else {
+            console.log("No theme selected by owner");
+        }
+    });
+}
+
 </script>
 </body>
 </html>
@@ -728,4 +1108,4 @@ function saveChatId(){
     }
   });
 }
-            </script>
+</script>

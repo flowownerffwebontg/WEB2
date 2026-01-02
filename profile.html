@@ -677,22 +677,27 @@ body{background:#f4f5f7;font-size:14px}
         CHANGE PASSWORD <i class="fas fa-key"></i>
     </div>
      
- 
-    <div class="pass-input-group active-border">
-        <i class="fas fa-lock"></i>
-        <input type="password" id="currentPass" placeholder="Current Password">
+    <div class="input-field">
+        <div class="custom-input border-red">
+            <div class="icon-box bg-red"><i class="fas fa-lock"></i></div>
+            <input type="password" id="currentPass" placeholder="Current Password">
+        </div>
     </div>
 
-    <div class="pass-input-group">
-        <i class="fas fa-key"></i>
-        <input type="password" id="newPass" placeholder="New Password">
+    <div class="input-field">
+        <div class="custom-input border-green">
+            <div class="icon-box bg-green"><i class="fas fa-key"></i></div>
+            <input type="password" id="newPass" placeholder="New Password">
+        </div>
     </div>
 
-    <div class="pass-input-group">
-        <i class="fas fa-key"></i>
-        <input type="password" id="confirmPass" placeholder="Confirm Password">
+    <div class="input-field">
+        <div class="custom-input border-green">
+            <div class="icon-box bg-green"><i class="fas fa-key"></i></div>
+            <input type="password" id="confirmPass" placeholder="Confirm Password">
+        </div>
     </div>
-</div>
+            </div>
 
 
             <button class="save-btn" onclick="saveAccountSettings()">Change Password</button>

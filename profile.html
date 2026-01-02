@@ -455,7 +455,7 @@ body{background:#f4f5f7;font-size:14px}
 /* Screenshot style inputs */
 .pass-input-group {
     background: #111;
-    border: 1px solid #333;
+    border: 1px solid #008000;
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -678,12 +678,12 @@ body{background:#f4f5f7;font-size:14px}
     </div>
      
  
-    <div class="pass-input-group">
+    <div class="pass-input-group active-border">
         <i class="fas fa-lock"></i>
         <input type="password" id="currentPass" placeholder="Current Password">
     </div>
 
-    <div class="pass-input-group active-border">
+    <div class="pass-input-group">
         <i class="fas fa-key"></i>
         <input type="password" id="newPass" placeholder="New Password">
     </div>
@@ -695,7 +695,7 @@ body{background:#f4f5f7;font-size:14px}
 </div>
 
 
-            <button class="save-btn" onclick="saveAccountSettings()">Update</button>
+            <button class="save-btn" onclick="saveAccountSettings()">Change Password</button>
         </div>
     </div>
 </div>

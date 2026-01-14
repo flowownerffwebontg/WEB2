@@ -360,6 +360,348 @@
     from { transform: translateY(30px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
+/* --- ACCOUNT SETTINGS POPUP --- */
+.acc-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 8000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.acc-card {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 25px;
+    overflow: hidden;
+    animation: accSlideUp 0.4s ease-out;
+}
+
+.acc-header {
+    background: var(--primary-gradient);
+    padding: 20px;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+.acc-body {
+    padding: 20px;
+}
+
+/* Info Display Style */
+.acc-info-box {
+    background: #F2F0F9;
+    padding: 12px 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+.acc-label {
+    font-size: 11px;
+    color: #9A9AB0;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.acc-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1D1D35;
+}
+
+/* Password Change Form */
+.pwd-section {
+    border-top: 1px dashed #DDD;
+    margin-top: 20px;
+    padding-top: 20px;
+}
+
+.pwd-input {
+    width: 100%;
+    padding: 12px 15px;
+    background: #F9F9F9;
+    border: 1px solid #EEE;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    outline: none;
+}
+
+.pwd-input:focus {
+    border-color: var(--primary-purple);
+}
+
+.acc-update-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.acc-close-btn {
+    width: 100%;
+    padding: 10px;
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+@keyframes accSlideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+/* --- THEME COLORS --- */
+:root {
+    --bg-body: #F2F0F9;
+    --bg-card: #FFFFFF;
+    --text-dark: #1D1D35;
+    --text-grey: #9A9AB0;
+    --primary-purple: #9474FF;
+    --primary-gradient: linear-gradient(135deg, #9C72FD 0%, #7450FE 100%);
+    --header-purple: #7450FE;
+    --shadow-soft: 0 10px 25px rgba(166, 171, 189, 0.3);
+    --input-bg: #F2F0F9;
+}
+
+/* --- DARK MODE OVERRIDES --- */
+body.dark-theme {
+    --bg-body: #121212;
+    --bg-card: #1E1E2E;
+    --text-dark: #FFFFFF;
+    --text-grey: #A0A0B0;
+    --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.5);
+    --input-bg: #2D2D3F;
+}
+
+/* Apply variables to elements */
+body { background-color: var(--bg-body); color: var(--text-dark); }
+#sidebar, .storage-card, .list-item, .cat-item, .acc-card, .chatid-card { 
+    background: var(--bg-card) !important; 
+    color: var(--text-dark); 
+}
+.acc-info-box, .url-box, .chatid-display { 
+    background: var(--input-bg) !important; 
+}
+/* --- PROFILE SETTING MODAL --- */
+.prof-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 9000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.prof-card {
+    background: var(--bg-card);
+    width: 100%;
+    max-width: 380px;
+    border-radius: 30px;
+    overflow: hidden;
+    animation: accSlideUp 0.4s ease;
+    text-align: center;
+}
+
+.prof-header-bg {
+    background: var(--primary-gradient);
+    height: 100px;
+    width: 100%;
+}
+
+.avatar-edit-container {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    margin: -65px auto 20px auto;
+}
+
+.avatar-preview-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid var(--bg-card);
+    object-fit: cover;
+    box-shadow: var(--shadow-soft);
+}
+
+.camera-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #000;
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 3px solid var(--bg-card);
+    transition: 0.3s;
+}
+
+.camera-btn:active { transform: scale(0.9); }
+
+.prof-body { padding: 0 25px 30px 25px; }
+
+.save-btn {
+    width: 100%;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 15px;
+    font-weight: 700;
+    margin-top: 20px;
+    cursor: pointer;
+    box-shadow: var(--shadow-glow);
+}
+
+#avatarInput { display: none; }
+
+/* Copy Icon Style in Account Popup */
+.acc-info-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #F2F0F9;
+    padding: 12px 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+.acc-data-left {
+    flex: 1;
+}
+
+.acc-copy-icon {
+    color: var(--primary-purple);
+    cursor: pointer;
+    font-size: 16px;
+    padding-left: 10px;
+    transition: 0.2s;
+}
+
+.acc-copy-icon:active {
+    transform: scale(0.8);
+}
+/* --- MEMBERS FULL PAGE STYLE --- */
+.members-container {
+    padding: 25px;
+    animation: fadeIn 0.4s ease;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: 25px;
+    box-shadow: var(--shadow-soft);
+    text-align: center;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 10px;
+    font-size: 20px;
+    color: white;
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    display: block;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-grey);
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* User List Style */
+.member-list-section {
+    background: var(--bg-card);
+    border-radius: 30px;
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+}
+
+.member-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.member-row:last-child { border: none; }
+
+.member-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.vip-badge {
+    background: #FFD700;
+    color: #000;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+/* Gap ko kam karne ke liye updated CSS */
+.members-container {
+    padding: 15px 25px; /* Top padding kam ki gayi */
+    animation: fadeIn 0.4s ease;
+}
+
+.members-header {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 10px; /* Header ke niche ka gap 25px se 10px kar diya */
+}
+
+.stat-grid {
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; /* Cards ke beech ka gap thoda kam kiya */
+    margin-bottom: 20px; /* Stats aur List ke beech ka gap kam kiya */
+}
 
  </style>
 </head>
@@ -382,17 +724,28 @@
                 <i class="fa-solid fa-user"></i> PROFILE 
             </div>
             <div class="nav-link"><i class="fa-brands fa-telegram"></i>TG CHANNEL</div>
-            <div class="nav-link"><i class="fa-solid fa-user-group"></i>MEMBERS</div>
+            <div class="nav-link" id="nav-members" onclick="switchPage('members')">
+    <i class="fa-solid fa-user-group"></i> MEMBERS
+</div>
+
+
             <div class="nav-link"><i class="fa-solid fa-bolt"></i>VIP FUTURE</div>
             <div class="nav-link"><i class="fa-solid fa-envelope"></i>FEEDBACK</div>
+            <div class="nav-link"><i class="fa-solid fa-bullhorn"></i>ANNOUNCEMENTS</div>
             <div class="nav-link" onclick="logoutUser()">
                 <i class="fa-solid fa-door-open"></i>LOGOUT
             </div>
         </div>
 
         <div class="theme-toggle-box">
-            <div class="theme-icon active" title="Light Mode"><i class="fa-solid fa-sun"></i></div>
-            <div class="theme-icon" title="Dark Mode"><i class="fa-regular fa-moon"></i></div>
+    <div class="theme-icon active" id="sun-btn" onclick="setTheme('light')" title="Light Mode">
+        <i class="fa-solid fa-sun"></i>
+    </div>
+    <div class="theme-icon" id="moon-btn" onclick="setTheme('dark')" title="Dark Mode">
+        <i class="fa-regular fa-moon"></i>
+    </div>
+</div>
+
         </div>
     </div>
 
@@ -413,7 +766,7 @@
                 <div class="url-box">
                     <i class="fa-solid fa-link"></i>
                     <span id="webUrl">https://flowweb.app</span>
-                    <i class="fa-regular fa-copy copy-btn" onclick="copyWebUrl()"></i>
+                 <i class="fa-regular fa-copy copy-btn" onclick="copyWebUrl()"></i>
                 </div>
             </div>
             <div class="list-item"><div class="icon-box" style="background: #36C3D8;"><i class="fa-solid fa-brush"></i></div><div style="flex:1"><b>THEMES & DEMOS</b></div><i class="fa-solid fa-chevron-right" style="color:#DDD"></i></div>
@@ -552,10 +905,89 @@
             </div>
 
             <h3 style="margin-bottom: 15px; font-size: 16px;">SETTINGS</h3>
-            <div class="list-item"><div class="icon-box" style="background: #FFF4D9; color: #FFC107;"><i class="fa-solid fa-sliders"></i></div><div style="flex:1"><b>ACCOUNT SETTING</b></div><i class="fa-solid fa-ellipsis-vertical" style="color:#AAA"></i></div>
-            <div class="list-item"><div class="icon-box" style="background: #FFF4D9; color: #FFC107;"><i class="fa-solid fa-user-gear"></i></div><div style="flex:1"><b>PROFILE SETTING</b></div><i class="fa-solid fa-ellipsis-vertical" style="color:#AAA"></i></div>
+            <div class="list-item" onclick="openAccountPopup()">
+    <div class="icon-box" style="background: #FFF4D9; color: #FFC107;">
+        <i class="fa-solid fa-sliders"></i>
+    </div>
+    <div style="flex:1"><b>ACCOUNT SETTING</b></div>
+    <i class="fa-solid fa-ellipsis-vertical" style="color:#AAA"></i>
+</div>
+
+<div id="account-popup" class="acc-overlay">
+    <div class="acc-card">
+        <div class="acc-header">
+            <i class="fa-solid fa-circle-user" style="font-size:40px; margin-top:10px;"></i>
+            <h3 style="margin:0;">Account Settings</h3>
+        </div>
+
+        <div class="acc-body">
+            <div class="acc-info-box">
+                <div class="acc-data-left">
+                    <div class="acc-label">Username</div>
+                    <div id="acc-username" class="acc-value">---</div>
+                </div>
+                <i class="fa-regular fa-copy acc-copy-icon" onclick="copyAccData('acc-username')"></i>
+            </div>
+
+            <div class="acc-info-box">
+                <div class="acc-data-left">
+                    <div class="acc-label">Email Address</div>
+                    <div id="acc-email" class="acc-value">---</div>
+                </div>
+                <i class="fa-regular fa-copy acc-copy-icon" onclick="copyAccData('acc-email')"></i>
+            </div>
+
+            <div class="acc-info-box">
+                <div class="acc-data-left">
+                    <div class="acc-label">Telegram Chat ID</div>
+                    <div id="acc-chatid" class="acc-value">---</div>
+                </div>
+                <i class="fa-regular fa-copy acc-copy-icon" onclick="copyAccData('acc-chatid')"></i>
+            </div>
+
+            <div class="pwd-section">
+                <div class="acc-label" style="margin-bottom:10px; color:var(--primary-purple);">Change Password</div>
+                <input type="password" id="oldPwd" class="pwd-input" placeholder="Current Password">
+                <input type="password" id="newPwd" class="pwd-input" placeholder="New Password">
+                <input type="password" id="confirmPwd" class="pwd-input" placeholder="Confirm New Password">
+                <button class="acc-update-btn" onclick="updateUserPassword()">UPDATE PASSWORD</button>
+            </div>
+
+            <button class="acc-close-btn" onclick="closeAccountPopup()">Close Window</button>
         </div>
     </div>
+</div>
+
+
+            <div class="list-item" onclick="openProfilePopup()">
+    <div class="icon-box" style="background: #FFF4D9; color: #FFC107;"><i class="fa-solid fa-user-gear"></i></div>
+    <div style="flex:1"><b>PROFILE SETTING</b></div>
+    <i class="fa-solid fa-ellipsis-vertical" style="color:#AAA"></i>
+</div>
+
+        </div>
+    </div>
+<div id="prof-popup" class="prof-overlay">
+    <div class="prof-card">
+        <div class="prof-header-bg"></div>
+        
+        <div class="avatar-edit-container">
+            <img id="tempAvatar" src="https://uploads.onecompiler.io/4472wkpre/44agbuxg7/eef745c62d8f0e13d0933246fca04631.jpg" class="avatar-preview-img">
+            <label for="avatarInput" class="camera-btn">
+                <i class="fa-solid fa-camera"></i>
+            </label>
+            <input type="file" id="avatarInput" accept="image/*" onchange="previewImage(event)">
+        </div>
+
+        <div class="prof-body">
+            <h3 id="prof-name-title" style="margin-bottom: 5px;">User Name</h3>
+            <p style="color: var(--text-grey); font-size: 13px;">Update your profile picture</p>
+            
+            <button class="save-btn" onclick="applyAvatar()">SAVE CHANGES</button>
+            <p onclick="closeProfilePopup()" style="margin-top: 15px; color: #999; cursor: pointer; font-size: 14px;">Cancel</p>
+        </div>
+    </div>
+</div>
 
     <div id="themes-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:3000; overflow-y:auto; padding:30px;">
         <div style="display:flex; justify-content:flex-end;"><button onclick="closeThemesPopup()" style="background:#7450FE; color:white; border:none; padding:10px 20px; border-radius:20px; cursor:pointer;">CLOSE</button></div>
@@ -592,6 +1024,47 @@
         <button class="close-btn" onclick="closeChatIdPopup()">CLOSE</button>
     </div>
 </div>
+<div id="page-members" class="page">
+    <div class="members-container">
+        <div class="members-header">
+            <i class="fa-solid fa-ellipsis-vertical" onclick="toggleSidebar()" style="cursor: pointer; font-size: 20px;"></i>
+            <h2 style="font-size: 20px; font-weight: 700;">Community Hub</h2>
+            <div style="width: 20px;"></div> 
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--primary-gradient);">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <span id="full-total-mem" class="stat-value">0</span>
+                <span class="stat-label">Total users</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: #000;">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <span id="full-vip-mem" class="stat-value">0</span>
+                <span class="stat-label">VIP users</span>
+            </div>
+        </div>
+
+        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:10px;">
+            <h3 style="font-size:16px;">Active Members</h3>
+            <span style="font-size:12px; color:var(--primary-purple); font-weight:600;">View All</span>
+        </div>
+
+        <div class="member-list-section" id="member-list-container">
+            </div>
+    </div>
+</div>
+
+
+
+       
+    </div>
+</div>
+
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -632,7 +1105,7 @@
 
         // Themes Gallery Logic
         const themeUrls = [
-            "https://uploads.onecompiler.io/4472wkpre/448neayv9/cc.gokou2025_01_09_18_37_39c8601794-a533-4041-a86d-40087bc982bf.jpg",
+                "https://uploads.onecompiler.io/4472wkpre/448neayv9/cc.gokou2025_01_09_18_37_39c8601794-a533-4041-a86d-40087bc982bf.jpg",
             "https://uploads.onecompiler.io/4472wkpre/44agbuxg7/eef745c62d8f0e13d0933246fca04631.jpg",
             "https://uploads.onecompiler.io/4472wkpre/448neayv9/fcd9e3a1f202b2d2cbf691b2ff093a2b.jpg",
             "https://uploads.onecompiler.io/4472wkpre/44agbuxg7/38896a152d9ef17d3d63fad1b772c4e3.jpg",
@@ -784,7 +1257,251 @@ function showBotPopup() {
 function closeBotPopup() {
     document.getElementById('bot-data-popup').style.display = 'none';
 }
+// Function to open Account Popup and load data
+function openAccountPopup() {
+    if (!currentUserId) return alert("User not logged in!");
 
-    </script>
+    // Data load from UI/Firebase
+    document.getElementById('acc-username').innerText = document.getElementById('userName').innerText;
+    document.getElementById('acc-email').innerText = document.getElementById('userEmail').innerText;
+    
+    // Chat ID fetch from Firebase
+    database.ref("users/" + currentUserId + "/chatId").once("value", snap => {
+        document.getElementById('acc-chatid').innerText = snap.exists() ? snap.val() : "Not Connected";
+    });
+
+    document.getElementById('account-popup').style.display = 'flex';
+}
+
+function closeAccountPopup() {
+    document.getElementById('account-popup').style.display = 'none';
+}
+
+// Function to update password in Firebase
+function updateUserPassword() {
+    const oldPass = document.getElementById('oldPwd').value;
+    const newPass = document.getElementById('newPwd').value;
+    const confirmPass = document.getElementById('confirmPwd').value;
+
+    if (!oldPass || !newPass || !confirmPass) {
+        return alert("Please fill all password fields!");
+    }
+
+    if (newPass !== confirmPass) {
+        return alert("New passwords do not match!");
+    }
+
+    if (newPass.length < 6) {
+        return alert("Password should be at least 6 characters!");
+    }
+
+    const user = firebase.auth().currentUser;
+    const credential = firebase.auth.EmailAuthProvider.credential(user.email, oldPass);
+
+    // 1. Re-authenticate user (Security check)
+    user.reauthenticateWithCredential(credential).then(() => {
+        
+        // 2. Update in Firebase Auth
+        user.updatePassword(newPass).then(() => {
+            
+            // 3. Update in Realtime Database (Optional, for record)
+            database.ref("users/" + currentUserId).update({
+                password: newPass
+            }).then(() => {
+                alert("✅ Password updated successfully!");
+                closeAccountPopup();
+                // Clear inputs
+                document.getElementById('oldPwd').value = "";
+                document.getElementById('newPwd').value = "";
+                document.getElementById('confirmPwd').value = "";
+            });
+
+        }).catch(error => alert("Error: " + error.message));
+
+    }).catch(error => {
+        alert("Incorrect current password!");
+    });
+}
+// Theme Toggle Functionality
+function setTheme(theme) {
+    const sunBtn = document.getElementById('sun-btn');
+    const moonBtn = document.getElementById('moon-btn');
+
+    if (theme === 'dark') {
+        document.body.classList.add('dark-theme');
+        moonBtn.classList.add('active');
+        sunBtn.classList.remove('active');
+        localStorage.setItem('selectedTheme', 'dark');
+    } else {
+        document.body.classList.remove('dark-theme');
+        sunBtn.classList.add('active');
+        moonBtn.classList.remove('active');
+        localStorage.setItem('selectedTheme', 'light');
+    }
+}
+
+// Check saved theme on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('selectedTheme');
+    if (savedTheme === 'dark') {
+        setTheme('dark');
+    }
+});
+// Profile Popup Open/Close
+function openProfilePopup() {
+    // Current user ka naam set karein
+    document.getElementById('prof-name-title').innerText = document.getElementById('userName').innerText;
+    // Current image preview mein dikhayein
+    const currentSrc = document.querySelector('.promo-card img').src;
+    document.getElementById('tempAvatar').src = currentSrc;
+    
+    document.getElementById('prof-popup').style.display = 'flex';
+}
+
+function closeProfilePopup() {
+    document.getElementById('prof-popup').style.display = 'none';
+}
+
+// Image preview jab gallery se select ho
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        const output = document.getElementById('tempAvatar');
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+// Avatar apply aur firebase mein update karne ke liye
+function applyAvatar() {
+    const newImage = document.getElementById('tempAvatar').src;
+    
+    // Main profile image update karein
+    document.querySelector('.promo-card img').src = newImage;
+
+    // Firebase database mein save karein
+    if (currentUserId) {
+        database.ref("users/" + currentUserId).update({
+            profilePic: newImage
+        }).then(() => {
+            alert("✅ Avatar updated successfully!");
+            closeProfilePopup();
+        }).catch(err => alert("Error: " + err.message));
+    }
+}
+
+// Page load hone par agar photo pehle se saved hai toh load karein
+auth.onAuthStateChanged(user => {
+    if (user) {
+        database.ref("users/" + user.uid + "/profilePic").on("value", snap => {
+            if (snap.exists()) {
+                document.querySelector('.promo-card img').src = snap.val();
+            }
+        });
+    }
+});
+// Function to copy data from Account Popup
+function copyAccData(elementId) {
+    const textToCopy = document.getElementById(elementId).innerText;
+    
+    if (textToCopy === "---" || textToCopy === "Not Connected") {
+        alert("No data to copy!");
+        return;
+    }
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        // Chhota sa feedback alert
+        alert("📋 Copied: " + textToCopy);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
+}
+// Function to Load Member Data
+function fetchMemberStats() {
+    database.ref("users").on("value", snap => {
+        let total = 0;
+        let vip = 0;
+        let listHtml = "";
+
+        if (snap.exists()) {
+            total = snap.numChildren();
+            
+            snap.forEach(child => {
+                const userData = child.val();
+                if (userData.isVip === true) vip++;
+
+                // List items create karein
+                listHtml += `
+                    <div class="member-row">
+                        <img src="${userData.profilePic || 'https://via.placeholder.com/50'}" class="member-avatar">
+                        <div style="flex:1">
+                            <div style="font-weight:600; font-size:14px;">
+                                ${userData.username || 'Anonymous'}
+                                ${userData.isVip ? '<span class="vip-badge">VIP</span>' : ''}
+                            </div>
+                            <div style="font-size:11px; color:#9A9AB0;">${userData.email || 'No Email'}</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right" style="color:#EEE; font-size:12px;"></i>
+                    </div>
+                `;
+            });
+        }
+        
+        // UI Updates
+        document.getElementById('full-total-mem').innerText = total;
+        document.getElementById('full-vip-mem').innerText = vip;
+        document.getElementById('member-list-container').innerHTML = listHtml;
+    });
+}
+
+// Ensure stats are fetched when the page is loaded
+auth.onAuthStateChanged(user => {
+    if (user) {
+        fetchMemberStats();
+    }
+});
+// Function to Load Member Data with Default Avatar
+function fetchMemberStats() {
+    const defaultAvatar = "https://uploads.onecompiler.io/4472wkpre/44agbuxg7/eef745c62d8f0e13d0933246fca04631.jpg";
+
+    database.ref("users").on("value", snap => {
+        let total = 0;
+        let vip = 0;
+        let listHtml = "";
+
+        if (snap.exists()) {
+            total = snap.numChildren();
+            
+            snap.forEach(child => {
+                const userData = child.val();
+                if (userData.isVip === true) vip++;
+
+                // Agar profilePic missing hai ya empty hai toh default image use hogi
+                const userImg = (userData.profilePic && userData.profilePic !== "") ? userData.profilePic : defaultAvatar;
+
+                listHtml += `
+                    <div class="member-row">
+                        <img src="${userImg}" class="member-avatar" onerror="this.src='${defaultAvatar}'">
+                        <div style="flex:1">
+                            <div style="font-weight:600; font-size:14px; color:var(--text-dark);">
+                                ${userData.username || 'Anonymous'}
+                                ${userData.isVip ? '<span class="vip-badge">VIP</span>' : ''}
+                            </div>
+                            <div style="font-size:11px; color:var(--text-grey);">${userData.email || 'No Email'}</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right" style="color:#EEE; font-size:12px;"></i>
+                    </div>
+                `;
+            });
+        }
+        
+        // UI Updates
+        document.getElementById('full-total-mem').innerText = total;
+        document.getElementById('full-vip-mem').innerText = vip;
+        document.getElementById('member-list-container').innerHTML = listHtml;
+    });
+}
+
+</script>
 </body>
 </html>
